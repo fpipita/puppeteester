@@ -3,8 +3,8 @@ import glob from "glob";
 import chokidar from "chokidar";
 import esm from "@fpipita/esm-middleware";
 import path from "path";
-import { Scheduler, TestTask } from "./test-runner.js";
-import { RunPuppeteerTask } from "./puppeteer-task.js";
+import { Scheduler } from "./scheduler.js";
+import { RunPuppeteerTask } from "./run-puppeteer-task.js";
 
 const EXPRESS_PORT = 3000;
 
@@ -27,11 +27,13 @@ function serveTests(req, res) {
             content="width=device-width, initial-scale=1.0"
           />
           <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-          <link rel="stylesheet" href="node_modules/mocha/mocha.css" />
+          <link
+            rel="stylesheet"
+            href="/puppeteester/node_modules/mocha/mocha.css"
+          />
           <title>Condomani - testing</title>
-          <script src="/puppeteester/node_modules/chai/chai.js?nomodule=true"></script>
           <script src="/puppeteester/node_modules/mocha/mocha.js?nomodule=true"></script>
-          <script tyle="module">
+          <script type="module">
             const config = { ui: "bdd" };
             if (${JSON.stringify(headless)}) {
               config.reporter = "spec";

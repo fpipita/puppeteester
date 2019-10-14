@@ -7,8 +7,7 @@
   "author": "Francesco Pipita <francesco.pipita@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@fpipita/esm-middleware": "^1.2.2",
-    "chai": "^4.2.0",
+    "@fpipita/esm-middleware": "^1.2.3",
     "chokidar": "^3.2.1",
     "express": "^4.17.1",
     "glob": "^7.1.4",

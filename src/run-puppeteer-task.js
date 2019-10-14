@@ -1,5 +1,5 @@
 import puppeteer from "puppeteer";
-import { Task } from "./test-runner.js";
+import { Task } from "./scheduler.js";
 
 export class RunPuppeteerTask extends Task {
   /**
