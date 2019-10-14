@@ -1,0 +1,31 @@
+{
+  "name": "@fpipita/puppeteester",
+  "type": "module",
+  "version": "0.0.1",
+  "description": "Run client side tests within a containerized headless Chrome instance",
+  "main": "index.js",
+  "author": "Francesco Pipita <francesco.pipita@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@fpipita/esm-middleware": "^1.2.2",
+    "chai": "^4.2.0",
+    "chokidar": "^3.2.1",
+    "express": "^4.17.1",
+    "glob": "^7.1.4",
+    "mocha": "^6.2.1",
+    "puppeteer": "^1.20.0"
+  },
+  "devDependencies": {
+    "eslint": "^6.5.1",
+    "eslint-config-prettier": "^6.4.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "esm": "^3.2.25",
+    "husky": ">=1",
+    "lint-staged": "^9.4.2",
+    "prettier": "^1.18.2"
+  },
+  "scripts": {
+    "start": "node --inspect=0.0.0.0 --experimental-modules ./src/index.js",
+    "test": "mocha --require esm"
+  }
+}
