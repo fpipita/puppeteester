@@ -92,8 +92,8 @@ function main() {
      * any time something changes in the client side source dir,
      * we schedule a test run
      */
-    chokidar.watch("/src").on("all", async () => {
-      await scheduler.schedule(task);
+    chokidar.watch("/src").on("all", () => {
+      scheduler.schedule(task);
     });
   });
 }

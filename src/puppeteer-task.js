@@ -15,7 +15,7 @@ export class RunPuppeteerTask extends Task {
     this._testPageUrl = testPageUrl;
   }
 
-  async _run() {
+  async run() {
     if (this._browser === null || !this._browser.isConnected()) {
       this._browser = await puppeteer.launch({
         args: [
