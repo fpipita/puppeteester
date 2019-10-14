@@ -13,12 +13,6 @@ export class Task {
   }
 }
 
-export class DefaultTimer extends Timer {
-  now() {
-    return Date.now();
-  }
-}
-
 export class Scheduler {
   /**
    * @param {Timer} timer
@@ -28,7 +22,11 @@ export class Scheduler {
     this._running = Promise.resolve();
     this._throttle = throttle;
     this._timer = timer;
-    this._lastScheduled = timer.now();
+    /**
+     * this is needed in order to make sure first run is
+     * always executed
+     */
+    this._lastScheduled = 0;
   }
 
   /**
@@ -45,5 +43,46 @@ export class Scheduler {
     this._lastScheduled = now;
     this._running = task.run();
     return this._running;
+  }
+}
+
+export class TestTask extends Task {
+  /**
+   *
+   * @param {function=} callback
+   */
+  constructor(callback = () => {}) {
+    super();
+    this._calls = 0;
+    this._callback = callback;
+  }
+
+  async run() {
+    await new Promise(resolve => {
+      setTimeout(resolve, 1000);
+    });
+    this._calls++;
+    this._callback(this._calls);
+  }
+}
+
+export class MockTimer extends Timer {
+  constructor() {
+    super();
+    this._now = 0;
+  }
+
+  setNow(now) {
+    this._now = now;
+  }
+
+  now() {
+    return this._now;
+  }
+}
+
+export class DefaultTimer extends Timer {
+  now() {
+    return Date.now();
   }
 }

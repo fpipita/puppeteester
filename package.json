@@ -2,7 +2,7 @@
   "name": "@fpipita/puppeteester",
   "type": "module",
   "version": "0.0.1",
-  "description": "Run client side tests within a containerized headless Chrome instance",
+  "description": "Run client side tests within a containerized headless Chrome instance.",
   "main": "index.js",
   "author": "Francesco Pipita <francesco.pipita@gmail.com>",
   "license": "MIT",

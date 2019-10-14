@@ -1,34 +1,5 @@
 import assert from "assert";
-import { Scheduler, Task, Timer } from "../src/test-runner";
-
-class TestTask extends Task {
-  constructor() {
-    super();
-    this._calls = 0;
-  }
-
-  async run() {
-    await new Promise(resolve => {
-      setTimeout(resolve, 1000);
-    });
-    this._calls++;
-  }
-}
-
-class MockTimer extends Timer {
-  constructor() {
-    super();
-    this._now = 0;
-  }
-
-  setNow(now) {
-    this._now = now;
-  }
-
-  now() {
-    return this._now;
-  }
-}
+import { Scheduler, MockTimer, TestTask } from "../src/test-runner";
 
 describe("test runner class", () => {
   it("waits for active task to complete", async () => {

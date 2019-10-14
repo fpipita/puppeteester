@@ -1,52 +1,12 @@
 import express from "express";
 import glob from "glob";
-import puppeteer from "puppeteer";
 import chokidar from "chokidar";
 import esm from "@fpipita/esm-middleware";
 import path from "path";
-import { Scheduler, Task } from "./test-runner.js";
+import { Scheduler, TestTask } from "./test-runner.js";
+import { RunPuppeteerTask } from "./puppeteer-task.js";
 
 const EXPRESS_PORT = 3000;
-
-class RunPuppeteerTask extends Task {
-  constructor() {
-    super();
-    /** @type {?puppeteer.Browser} */
-    this._browser = null;
-    /** @type {?puppeteer.Page} */
-    this._page = null;
-  }
-
-  async _run() {
-    if (this._browser === null || !this._browser.isConnected()) {
-      this._browser = await puppeteer.launch({
-        args: [
-          "--no-sandbox",
-          "--disable-setuid-sandbox",
-          "--disable-dev-shm-usage"
-        ]
-      });
-    }
-    if (this._page !== null && !this._page.isClosed()) {
-      await this._page.reload();
-    } else {
-      this._page = await this._browser.newPage();
-      this._page.on("console", async msg => {
-        const args = [];
-        for (let x of msg.args()) {
-          args.push(await x.jsonValue());
-        }
-        console.log(...args);
-      });
-      await this._page.goto(`http://localhost:${EXPRESS_PORT}`);
-    }
-    try {
-      await this._page.waitForSelector("#mocha[done=true]");
-    } catch (ex) {
-      console.error("Error while running tests in Chrome", ex);
-    }
-  }
-}
 
 /**
  *
@@ -126,14 +86,14 @@ function main() {
 
   // tests are run as soon as the Express app is up
   app.listen(EXPRESS_PORT, async () => {
-    const task = new RunPuppeteerTask();
+    const task = new RunPuppeteerTask(`http://localhost:${EXPRESS_PORT}`);
     const scheduler = new Scheduler();
     /**
      * any time something changes in the client side source dir,
      * we schedule a test run
      */
-    chokidar.watch("/src").on("all", () => {
-      scheduler.schedule(task);
+    chokidar.watch("/src").on("all", async () => {
+      await scheduler.schedule(task);
     });
   });
 }
