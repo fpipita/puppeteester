@@ -1,8 +1,10 @@
 export class Timer {
   /**
-   * @returns {!number}
+   * @param {!number} milliseconds
+   * @returns {Promise}
    */
-  now() {
+  // eslint-disable-next-line no-unused-vars
+  async wait(milliseconds) {
     throw new TypeError("Abstract method");
   }
 }
@@ -16,73 +18,128 @@ export class Task {
 export class Scheduler {
   /**
    * @param {Timer} timer
-   * @param {number} throttle
+   * @param {!number=} polling
    */
-  constructor(timer = new DefaultTimer(), throttle = 1000) {
-    this._running = Promise.resolve();
-    this._throttle = throttle;
+  constructor(timer, polling = 1000) {
+    /** @type {Array.<Task>} */
+    this._queue = [];
+    this._pending = null;
+    this._running = false;
     this._timer = timer;
-    /**
-     * this is needed in order to make sure first run is
-     * always executed
-     */
-    this._lastScheduled = 0;
+    this._polling = polling;
   }
 
   /**
    *
    * @param {Task} task
-   * @returns {Promise}
    */
-  async schedule(task) {
-    const now = this._timer.now();
-    const elapsed = now - this._lastScheduled;
-    if (elapsed <= this._throttle) {
-      return this._running;
+  schedule(task) {
+    this._queue = [...new Set([...this._queue, task])];
+  }
+
+  async stop() {
+    this._running = false;
+    await this._pending;
+  }
+
+  async start() {
+    if (this._running) {
+      return;
     }
-    this._lastScheduled = now;
-    this._running = task.run();
-    return this._running;
+    this._running = true;
+    do {
+      const task = this._queue.shift();
+      if (task) {
+        await (this._pending = task.run());
+      } else {
+        await this._timer.wait(this._polling);
+      }
+    } while (this._running);
   }
 }
 
 export class TestTask extends Task {
   /**
    *
+   * @param {Timer} timer
+   * @param {!number=} duration
    * @param {function=} callback
    */
-  constructor(callback = () => {}) {
+  constructor(timer, duration = 100, callback = () => {}) {
     super();
+    this._timer = timer;
     this._calls = 0;
     this._callback = callback;
+    this._duration = duration;
   }
 
   async run() {
-    await new Promise(resolve => {
-      setTimeout(resolve, 1000);
-    });
+    await this._timer.wait(this._duration);
     this._calls++;
     this._callback(this._calls);
+  }
+}
+
+export class DefaultTimer extends Timer {
+  /**
+   * @param {!number} milliseconds
+   */
+  async wait(milliseconds) {
+    await new Promise(resolve => setTimeout(resolve, milliseconds));
+  }
+}
+
+export class DeferredPromise {
+  constructor() {
+    this.promise = new Promise((resolve, reject) => {
+      this._resolve = resolve;
+      this._reject = reject;
+    });
+  }
+
+  resolve() {
+    this._resolve();
+    return this;
+  }
+
+  reject() {
+    this._reject();
+    return this;
   }
 }
 
 export class MockTimer extends Timer {
   constructor() {
     super();
-    this._now = 0;
+    /** @type {Map.<number, DeferredPromise>} */
+    this._requests = new Map();
+    this._elapsed = 0;
   }
 
-  setNow(now) {
-    this._now = now;
+  /**
+   * @param {!number} milliseconds
+   * @returns {Promise}
+   */
+  wait(milliseconds) {
+    const time = milliseconds + this._elapsed;
+    let deferred = this._requests.get(time);
+    if (typeof deferred === "undefined") {
+      deferred = new DeferredPromise();
+      this._requests.set(time, deferred);
+    }
+    return deferred.promise;
   }
 
-  now() {
-    return this._now;
-  }
-}
-
-export class DefaultTimer extends Timer {
-  now() {
-    return Date.now();
+  /**
+   * @param {!number} milliseconds
+   */
+  async flush(milliseconds) {
+    this._elapsed += milliseconds;
+    for (const [time, deferred] of this._requests.entries()) {
+      if (time <= this._elapsed) {
+        await deferred.resolve().promise;
+        this._requests.delete(time);
+      }
+    }
   }
 }

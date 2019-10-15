@@ -3,7 +3,7 @@ import glob from "glob";
 import chokidar from "chokidar";
 import esm from "@fpipita/esm-middleware";
 import path from "path";
-import { Scheduler } from "./scheduler.js";
+import { Scheduler, DefaultTimer } from "./scheduler.js";
 import { RunPuppeteerTask } from "./run-puppeteer-task.js";
 
 const EXPRESS_PORT = 3000;
@@ -89,7 +89,8 @@ function main() {
   // tests are run as soon as the Express app is up
   app.listen(EXPRESS_PORT, async () => {
     const task = new RunPuppeteerTask(`http://localhost:${EXPRESS_PORT}`);
-    const scheduler = new Scheduler();
+    const scheduler = new Scheduler(new DefaultTimer());
+    scheduler.start();
     /**
      * any time something changes in the client side source dir,
      * we schedule a test run

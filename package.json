@@ -5,7 +5,7 @@
   "description": "Run client side tests within a headless Chrome instance.",
   "main": "index.js",
   "author": "Francesco Pipita <francesco.pipita@gmail.com>",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "dependencies": {
     "@fpipita/esm-middleware": "^1.2.3",
     "chokidar": "^3.2.1",
