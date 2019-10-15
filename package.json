@@ -2,7 +2,7 @@
   "name": "@fpipita/puppeteester",
   "type": "module",
   "version": "0.0.1",
-  "description": "Run client side tests within a containerized headless Chrome instance.",
+  "description": "Run client side tests within a headless Chrome instance.",
   "main": "index.js",
   "author": "Francesco Pipita <francesco.pipita@gmail.com>",
   "license": "MIT",
@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "commitizen": "^4.0.3",
+    "conventional-changelog-cli": "^2.0.25",
     "cz-conventional-changelog": "^3.0.2",
     "eslint": "^6.5.1",
     "eslint-config-prettier": "^6.4.0",
@@ -28,7 +29,11 @@
   "scripts": {
     "start": "node --inspect=0.0.0.0 --experimental-modules ./src/index.js",
     "test": "mocha --ui tdd --require esm",
-    "commit": "git-cz"
+    "commit": "git-cz",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md",
+    "preversion": "yarn test && yarn eslint .",
+    "version": "yarn changelog",
+    "postversion": "git push && git push --tags"
   },
   "config": {
     "commitizen": {
