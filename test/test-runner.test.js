@@ -1,8 +1,8 @@
 import assert from "assert";
-import { Scheduler, MockTimer, TestTask } from "../src/test-runner";
+import { Scheduler, MockTimer, TestTask } from "../src/scheduler.js";
 
-describe("test runner class", () => {
-  it("waits for active task to complete", async () => {
+suite("test runner class", () => {
+  test("waits for active task to complete", async () => {
     const timer = new MockTimer();
     const scheduler = new Scheduler(timer);
     const task = new TestTask();
