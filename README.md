@@ -9,6 +9,6 @@ Run client side tests within a containerized headless Chrome instance.
 - [x] chore: don't inject Chai into the test webpage environment
 - [ ] feat: add the possibility to specify Mocha's interface (bdd, tdd, etc) through an environment variable or something
 - [ ] build: add versioning hooks
-- [ ] build: add conventional changelog
+- [x] build: add conventional changelog
 - [ ] feat: provide watch and single run modes
 - [ ] feat: use a single volume for both client side node_modules and source code and use some kind of mechanism to exclude/include folders containing the tests to run
