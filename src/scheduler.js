@@ -39,7 +39,7 @@ export class Scheduler {
 
   async stop() {
     this._running = false;
-    await this._pending;
+    return this._pending;
   }
 
   async start() {
@@ -84,8 +84,8 @@ export class DefaultTimer extends Timer {
   /**
    * @param {!number} milliseconds
    */
-  async wait(milliseconds) {
-    await new Promise(resolve => setTimeout(resolve, milliseconds));
+  wait(milliseconds) {
+    return new Promise(resolve => setTimeout(resolve, milliseconds));
   }
 }
 
