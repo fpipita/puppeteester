@@ -1,3 +1,12 @@
+## [1.0.1](https://github.com/fpipita/puppeteester/compare/v1.0.0...v1.0.1) (2019-10-15)
+
+
+### Bug Fixes
+
+* **scheduler:** wait for current run to complete before to start a new one ([1b0b503](https://github.com/fpipita/puppeteester/commit/1b0b5038217f9b3501b8b3c7c10ebc3e6c79c2fb))
+
+
+
 # 1.0.0 (2019-10-15)
 
 
