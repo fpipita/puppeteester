@@ -1,0 +1,17 @@
+{
+  "name": "my-app",
+  "version": "1.0.0",
+  "description": "Puppeteester example usage",
+  "main": "src/sum.js",
+  "author": "Francesco Pipita <francesco.pipita@gmail.com>",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "chai": "^4.2.0"
+  },
+  "dependencies": {
+    "lodash-es": "^4.17.15"
+  },
+  "scripts": {
+    "test": "docker-compose run -f docker-compose.unit-tests.yml test"
+  }
+}

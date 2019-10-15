@@ -4,7 +4,8 @@ Run client side tests within a headless Chrome instance.
 
 ### TODO
 
-- [ ] docs: add docker-compose example usage
+- [ ] docs: add puppeteester documentation
+- [x] docs: add docker-compose example usage
 - [ ] feat: use a websocket connection to live-reload the test page when source files change
 - [x] chore: don't inject Chai into the test webpage environment
 - [ ] feat: add the possibility to specify Mocha's interface (bdd, tdd, etc) through an environment variable or something
