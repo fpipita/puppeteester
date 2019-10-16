@@ -1,3 +1,17 @@
+# [1.1.0](https://github.com/fpipita/puppeteester/compare/v1.0.1...v1.1.0) (2019-10-16)
+
+
+### Bug Fixes
+
+* **scheduler:** don't double wrap promises ([bee1a52](https://github.com/fpipita/puppeteester/commit/bee1a52afdb8fbe9c6483f3296d9b416719ab7ca))
+
+
+### Features
+
+* **mocha:** set Mocha's ui through MOCHA_UI env variable ([debab42](https://github.com/fpipita/puppeteester/commit/debab4251ef4377c71ddafc2c249187ef420558c))
+
+
+
 ## [1.0.1](https://github.com/fpipita/puppeteester/compare/v1.0.0...v1.0.1) (2019-10-15)
 
 
