@@ -7,6 +7,7 @@ import { Scheduler, DefaultTimer } from "./scheduler.js";
 import { RunPuppeteerTask } from "./run-puppeteer-task.js";
 
 const EXPRESS_PORT = 3000;
+const MOCHA_UI = process.env.MOCHA_UI || "tdd";
 
 /**
  *
@@ -34,17 +35,13 @@ function serveTests(req, res) {
           <title>Condomani - testing</title>
           <script src="/puppeteester/node_modules/mocha/mocha.js?nomodule=true"></script>
           <script type="module">
-            const config = { ui: "bdd" };
+            const config = { ui: ${JSON.stringify(MOCHA_UI)} };
             if (${JSON.stringify(headless)}) {
               config.reporter = "spec";
             }
             mocha.setup(config);
             mocha.useColors(true);
-            window.process = ${JSON.stringify({
-              env: {
-                NODE_ENV: "test"
-              }
-            })};
+            window.process = ${JSON.stringify({ env: { NODE_ENV: "test" } })};
           </script>
           ${files.map(file => `<script type="module" src="${file}"></script>`)}
           <script type="module">

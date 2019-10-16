@@ -8,3 +8,5 @@ services:
     volumes:
       - ./src:/src
       - ./node_modules:/node_modules
+    environment:
+      MOCHA_UI: "bdd"
