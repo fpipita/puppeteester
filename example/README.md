@@ -22,6 +22,9 @@ The test runner will load the specs from any `.spec.js` files located under the 
 
 Any time changes are detected in the `src/` folder, a new test run is automatically scheduled.
 
-## Debugging the example
+## Debugging your tests
 
-Debugging is as easy as pointing your browser to `http://localhost:40000` and opening the dev tools.
+You have two options:
+
+1. Point your browser to `http://localhost:40000` and inspect the page through its development tools.
+2. If you are a Chrome user, a better option is to connect to the Chrome instance managed by Puppeteer through the remote debugging protocol. You can do it by visiting the `chrome://inspect` url and by adding the host `127.0.0.1:9222` to the target discovery servers list. After doing so, you will get two new targets showing up in the remote target list, the one to inspect is the tab whose address is `http://localhost:3000/`.

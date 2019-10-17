@@ -21,7 +21,9 @@ export class RunPuppeteerTask extends Task {
         args: [
           "--no-sandbox",
           "--disable-setuid-sandbox",
-          "--disable-dev-shm-usage"
+          "--disable-dev-shm-usage",
+          "--remote-debugging-port=9222",
+          "--remote-debugging-address=0.0.0.0"
         ]
       });
     }

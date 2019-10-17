@@ -13,6 +13,7 @@ VOLUME /node_modules
 
 EXPOSE 3000/tcp
 EXPOSE 9229/tcp
+EXPOSE 9222/tcp
 
 RUN mkdir /puppeteester
 WORKDIR /puppeteester
