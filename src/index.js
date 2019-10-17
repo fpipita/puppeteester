@@ -8,6 +8,9 @@ import { RunPuppeteerTask } from "./run-puppeteer-task.js";
 
 const EXPRESS_PORT = 3000;
 const MOCHA_UI = process.env.MOCHA_UI || "tdd";
+const PUPPETEER_BROWSER_OPTIONS = JSON.parse(
+  process.env.PUPPETEER_BROWSER_OPTIONS || "{}"
+);
 
 /**
  *
@@ -80,7 +83,10 @@ function main() {
 
   // tests are run as soon as the Express app is up
   app.listen(EXPRESS_PORT, async () => {
-    const task = new RunPuppeteerTask(`http://localhost:${EXPRESS_PORT}`);
+    const task = new RunPuppeteerTask(
+      `http://localhost:${EXPRESS_PORT}`,
+      PUPPETEER_BROWSER_OPTIONS
+    );
     const scheduler = new Scheduler(new DefaultTimer());
     scheduler.start();
     /**

@@ -15,3 +15,5 @@ Run client side tests within a headless Chrome instance.
 - [ ] feat: use a single volume for both client side node_modules and source code and use some kind of mechanism to exclude/include folders containing the tests to run
 - [ ] feat: handle exceptions
 - [x] feat: expose headless Chrome debugging port to host
+- [ ] fix: don't schedulen new test run on atime events (if any)
+- [x] feat: add possibility to set Chrome's default viewport

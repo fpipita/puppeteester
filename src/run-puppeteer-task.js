@@ -1,23 +1,37 @@
 import puppeteer from "puppeteer";
 import { Task } from "./scheduler.js";
 
+const BROWSER_OPTIONS_KEYS = new Set([
+  "ignoreHTTPSErrors",
+  "defaultViewport",
+  "slowMo"
+]);
+
 export class RunPuppeteerTask extends Task {
   /**
    *
    * @param {!string} testPageUrl
+   * @param {puppeteer.BrowserOptions=} browserOptions
    */
-  constructor(testPageUrl) {
+  constructor(testPageUrl, browserOptions) {
     super();
     /** @type {?puppeteer.Browser} */
     this._browser = null;
     /** @type {?puppeteer.Page} */
     this._page = null;
     this._testPageUrl = testPageUrl;
+    /** @type {puppeteer.BrowserOptions} */
+    this._browserOptions = Object.fromEntries(
+      Object.entries(browserOptions || {}).filter(([k]) =>
+        BROWSER_OPTIONS_KEYS.has(k)
+      )
+    );
   }
 
   async run() {
     if (this._browser === null || !this._browser.isConnected()) {
       this._browser = await puppeteer.launch({
+        ...this._browserOptions,
         args: [
           "--no-sandbox",
           "--disable-setuid-sandbox",
