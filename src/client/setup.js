@@ -1,12 +1,13 @@
 import "/puppeteester/node_modules/mocha/mocha.js?nomodule=true";
 import { headless, ui } from "./config.js";
 
-const config = { ui };
-if (headless) {
-  config.reporter = "spec";
-}
-mocha.setup(config);
-mocha.useColors(true);
+mocha.setup({
+  enableTimeouts: false,
+  ui,
+  useColors: true,
+  reporter: headless ? "spec" : undefined,
+  ignoreLeaks: true
+});
 
 (window.after || window.suiteTeardown)(() => {
   const container = document.querySelector("#mocha");

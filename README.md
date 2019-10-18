@@ -17,3 +17,7 @@ Run client side tests within a headless Chrome instance.
 - [x] feat: expose headless Chrome debugging port to host
 - [ ] fix: don't schedulen new test run on atime events (if any)
 - [x] feat: add possibility to set Chrome's default viewport
+- [ ] feat: add possibility to set Chrome's timeout
+- [ ] feat: add code coverage support
+- [ ] perf: find a more efficient way to detect test completion
+- [ ] feat: add a way to load styles (to test layouts)
