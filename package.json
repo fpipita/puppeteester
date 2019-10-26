@@ -1,7 +1,7 @@
 {
   "name": "@fpipita/puppeteester",
   "type": "module",
-  "version": "1.1.0",
+  "version": "0.0.1",
   "description": "Run client side tests within a headless Chrome instance.",
   "main": "index.js",
   "author": "Francesco Pipita <francesco.pipita@gmail.com>",
