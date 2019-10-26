@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.0.1",
   "description": "Run client side tests within a headless Chrome instance.",
-  "main": "src/server.js",
+  "main": "src/puppeteester.js",
   "author": "Francesco Pipita <francesco.pipita@gmail.com>",
   "license": "GPL-3.0",
   "dependencies": {
@@ -28,8 +28,8 @@
     "prettier": "^1.18.2"
   },
   "scripts": {
-    "start": "node --inspect=0.0.0.0 --experimental-modules ./src/server.js",
-    "start:dev": "nodemon --inspect=0.0.0.0 --experimental-modules ./src/server.js",
+    "start": "node --inspect=0.0.0.0 --experimental-modules ./src/puppeteester.js",
+    "start:dev": "nodemon --inspect=0.0.0.0 --experimental-modules ./src/puppeteester.js",
     "test": "mocha --ui tdd --require esm",
     "commit": "git-cz",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md",

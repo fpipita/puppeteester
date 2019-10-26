@@ -11,7 +11,13 @@ export class Timer {
   }
 }
 
+/**
+ * @template T
+ */
 export class Task {
+  /**
+   * @returns {Promise<T>}
+   */
   async run() {
     throw new TypeError("Abstract method");
   }

@@ -10,7 +10,7 @@ Run client side tests within a headless Chrome instance.
 - [x] feat: add the possibility to set Mocha's ui option
 - [x] build: add versioning hooks
 - [x] build: add conventional changelog
-- [ ] feat: provide watch and single run modes
+- [x] feat: provide watch and single run modes
 - [ ] feat: use a single volume for both client side node_modules and source code and use some kind of mechanism to exclude/include folders containing the tests to run
 - [ ] feat: handle exceptions
 - [x] feat: expose headless Chrome debugging port to host

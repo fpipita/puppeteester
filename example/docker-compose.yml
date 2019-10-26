@@ -1,4 +1,4 @@
-version: "3"
+version: "3.7"
 services:
   test:
     image: fpipita/puppeteester
@@ -7,9 +7,17 @@ services:
       - "9222:9222" # Chrome containerized instance
       - "40000:3000" # Express server
     volumes:
-      - ./src:/src
-      - ./node_modules:/node_modules
+      - type: bind
+        source: ./src
+        target: /src
+      - type: bind
+        source: ./node_modules
+        target: /node_modules
     environment:
       MOCHA_UI: "tdd"
       # simulate running specs on a lg device
       PUPPETEER_BROWSER_OPTIONS: "{\"defaultViewport\":{\"width\":1280,\"height\":720}}"
+      # you can choose between "watch" (default) and "ci" modes
+      # ci mode runs the tests once and exits with either code 0
+      # on success or 1 if any test failed
+      PUPPETEESTER_MODE: "ci"

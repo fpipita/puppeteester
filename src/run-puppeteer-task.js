@@ -28,13 +28,21 @@ export class RunPuppeteerTask extends Task {
         BROWSER_OPTIONS_KEYS.has(k)
       )
     );
+    /** @type {Deferred<number>} */
     this._running = new Deferred();
   }
 
-  _done() {
-    this._running.resolve();
+  /**
+   * @param {number} failures number of failed tests
+   * @see {@link https://mochajs.org/api/runner#run}
+   */
+  _done(failures) {
+    this._running.resolve(failures);
   }
 
+  /**
+   * @returns {Promise<number>}
+   */
   async run() {
     this._running = new Deferred();
     if (this._browser === null || !this._browser.isConnected()) {
@@ -80,6 +88,6 @@ export class RunPuppeteerTask extends Task {
       });
       await this._page.goto(this._testPageUrl);
     }
-    await this._running.promise;
+    return this._running.promise;
   }
 }

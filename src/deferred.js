@@ -1,3 +1,6 @@
+/**
+ * @template T
+ */
 export class Deferred {
   constructor() {
     this.promise = new Promise((resolve, reject) => {
@@ -6,13 +9,19 @@ export class Deferred {
     });
   }
 
-  resolve() {
-    this._resolve();
+  /**
+   * @param {T} value
+   */
+  resolve(value) {
+    this._resolve(value);
     return this;
   }
 
-  reject() {
-    this._reject();
+  /**
+   * @param {T} rejection
+   */
+  reject(rejection) {
+    this._reject(rejection);
     return this;
   }
 }
