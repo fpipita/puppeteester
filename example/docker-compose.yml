@@ -10,6 +10,6 @@ services:
       - ./src:/src
       - ./node_modules:/node_modules
     environment:
-      MOCHA_UI: "bdd"
+      MOCHA_UI: "tdd"
       # simulate running specs on a lg device
       PUPPETEER_BROWSER_OPTIONS: "{\"defaultViewport\":{\"width\":1280,\"height\":720}}"

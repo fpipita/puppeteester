@@ -8,10 +8,3 @@ mocha.setup({
   reporter: headless ? "spec" : undefined,
   ignoreLeaks: true
 });
-
-(window.after || window.suiteTeardown)(() => {
-  const container = document.querySelector("#mocha");
-  if (container) {
-    container.setAttribute("done", "true");
-  }
-});

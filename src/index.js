@@ -47,7 +47,9 @@ function serveTests(req, res) {
           ${files.map(file => `<script type="module" src="${file}"></script>`)}
           <script type="module">
             mocha.checkLeaks();
-            mocha.run();
+            // the __done__ callback is exposed by the RunPuppeteerTask's
+            // run() method
+            mocha.run(window.__done__);
           </script>
         </head>
         <body>

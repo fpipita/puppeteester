@@ -1,0 +1,20 @@
+version: "3"
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile-dev
+    command: sh -c "yarn start:dev"
+    ports:
+      - "9229:9229" # Node
+      - "9222:9222" # Chrome
+      - "3000:3000" # Express
+    working_dir: /puppeteester
+    volumes:
+      - ./:/puppeteester
+      - ./example/src:/src
+      - ./example/node_modules:/node_modules
+networks:
+  default:
+    external:
+      name: bridge

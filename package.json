@@ -12,7 +12,7 @@
     "express": "^4.17.1",
     "glob": "^7.1.5",
     "mocha": "^6.2.2",
-    "puppeteer": "^2.0.0"
+    "puppeteer-core": "^2.0.0"
   },
   "devDependencies": {
     "commitizen": "^4.0.3",
@@ -24,10 +24,12 @@
     "esm": "^3.2.25",
     "husky": ">=1",
     "lint-staged": "^9.4.2",
+    "nodemon": "^1.19.4",
     "prettier": "^1.18.2"
   },
   "scripts": {
     "start": "node --inspect=0.0.0.0 --experimental-modules ./src/index.js",
+    "start:dev": "nodemon --inspect=0.0.0.0 --experimental-modules ./src/index.js",
     "test": "mocha --ui tdd --require esm",
     "commit": "git-cz",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md",

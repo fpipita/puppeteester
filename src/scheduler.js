@@ -1,3 +1,5 @@
+import { Deferred } from "./deferred.js";
+
 export class Timer {
   /**
    * @param {!number} milliseconds
@@ -89,29 +91,10 @@ export class DefaultTimer extends Timer {
   }
 }
 
-export class DeferredPromise {
-  constructor() {
-    this.promise = new Promise((resolve, reject) => {
-      this._resolve = resolve;
-      this._reject = reject;
-    });
-  }
-
-  resolve() {
-    this._resolve();
-    return this;
-  }
-
-  reject() {
-    this._reject();
-    return this;
-  }
-}
-
 export class MockTimer extends Timer {
   constructor() {
     super();
-    /** @type {Map.<number, DeferredPromise>} */
+    /** @type {Map.<number, Deferred>} */
     this._requests = new Map();
     this._elapsed = 0;
   }
@@ -124,7 +107,7 @@ export class MockTimer extends Timer {
     const time = milliseconds + this._elapsed;
     let deferred = this._requests.get(time);
     if (typeof deferred === "undefined") {
-      deferred = new DeferredPromise();
+      deferred = new Deferred();
       this._requests.set(time, deferred);
     }
     return deferred.promise;
