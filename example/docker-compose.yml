@@ -14,10 +14,17 @@ services:
         source: ./node_modules
         target: /node_modules
     environment:
-      MOCHA_UI: "tdd"
+      # takes one of Mocha's supported interfaces
+      UI: "tdd"
       # simulate running specs on a lg device
-      PUPPETEER_BROWSER_OPTIONS: "{\"defaultViewport\":{\"width\":1280,\"height\":720}}"
+      BROWSER_OPTIONS: '{"defaultViewport":{"width":1280,"height":720}}'
       # you can choose between "watch" (default) and "ci" modes
       # ci mode runs the tests once and exits with either code 0
       # on success or 1 if any test failed
-      PUPPETEESTER_MODE: "ci"
+      MODE: "ci"
+      # defaults to "false". If set to "true", puppeteester outputs
+      # text-summary (to the console) and html coverage reports (to the
+      # /coverage volume).
+      # You can inspect the html report by pointing your browser to
+      # http://localhost:3000/coverage/
+      COVERAGE: "true"

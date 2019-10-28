@@ -1,20 +1,8 @@
 import assert from "assert";
-import { Scheduler, TestTask, MockTimer } from "../src/scheduler.js";
+import { Scheduler, TestTask } from "../src/scheduler.js";
+import { MockTimer } from "../src/timer.js";
 
 suite("test runner class", () => {
-  test("mock timer", async () => {
-    const timer = new MockTimer();
-    let called = false;
-    (async () => {
-      await timer.wait(100);
-      called = true;
-    })();
-    await timer.flush(90);
-    assert.equal(false, called);
-    await timer.flush(11);
-    assert.equal(true, called);
-  });
-
   test("executes duplicate tasks once", async () => {
     const timer = new MockTimer();
     const scheduler = new Scheduler(timer, 100);

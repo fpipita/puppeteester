@@ -10,9 +10,12 @@
     "@fpipita/esm-middleware": "fpipita/esm-middleware",
     "chokidar": "^3.2.2",
     "express": "^4.17.1",
+    "fs-extra": "^8.1.0",
     "glob": "^7.1.5",
     "mocha": "^6.2.2",
-    "puppeteer-core": "^2.0.0"
+    "nyc": "^14.1.1",
+    "puppeteer-core": "^2.0.0",
+    "puppeteer-to-istanbul": "^1.2.2"
   },
   "devDependencies": {
     "commitizen": "^4.0.3",

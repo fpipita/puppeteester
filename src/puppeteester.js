@@ -1,10 +1,15 @@
+import { spawnSync } from "child_process";
+import fse from "fs-extra";
 import express from "express";
 import glob from "glob";
 import chokidar from "chokidar";
 import esm from "@fpipita/esm-middleware";
 import path from "path";
-import { Scheduler, DefaultTimer } from "./scheduler.js";
+import pti from "puppeteer-to-istanbul";
+import { Scheduler } from "./scheduler.js";
+import { DefaultTimer } from "./timer.js";
 import { RunPuppeteerTask } from "./run-puppeteer-task.js";
+import { URL } from "url";
 
 /**
  * @enum {string}
@@ -14,14 +19,29 @@ const PuppeteesterMode = {
   ci: "ci"
 };
 
-const EXPRESS_PORT = 3000;
-const MOCHA_UI = process.env.MOCHA_UI || "tdd";
-const PUPPETEER_BROWSER_OPTIONS = JSON.parse(
-  process.env.PUPPETEER_BROWSER_OPTIONS || "{}"
-);
+/**
+ * Represent the publicly available options
+ *
+ * @typedef {Object} PuppeteesterConfig
+ * @property {import("mocha").Interface} ui
+ * @property {string} mode
+ * @property {boolean} coverage,
+ * @property {import("puppeteer-core").BrowserOptions} browserOptions
+ */
 
-const PUPPETEESTER_MODE =
-  process.env.PUPPETEESTER_MODE || PuppeteesterMode.watch;
+/** @type {PuppeteesterConfig} */
+const config = {
+  ui: /** @type {import("mocha").Interface} */ (process.env.UI || "tdd"),
+  mode: process.env.MODE || PuppeteesterMode.watch,
+  coverage: JSON.parse(process.env.COVERAGE || "false"),
+  browserOptions: JSON.parse(process.env.BROWSER_OPTIONS || "{}")
+};
+
+/**
+ * local constants
+ */
+const EXPRESS_PORT = 3000;
+const SPEC_FILES_GLOB = "/src/**/*.spec.js";
 
 /**
  *
@@ -31,7 +51,7 @@ const PUPPETEESTER_MODE =
 function serveTests(req, res) {
   const useragent = req.headers["user-agent"];
   const headless = !useragent || /headless/i.test(useragent);
-  glob("/src/**/*.spec.js", (er, files) => {
+  glob(SPEC_FILES_GLOB, (er, files) => {
     res.send(/* HTML */ `
       <!DOCTYPE html>
       <html lang="en">
@@ -50,7 +70,7 @@ function serveTests(req, res) {
           <script type="module">
             window.__puppeteester__ = ${JSON.stringify({
               headless,
-              ui: MOCHA_UI
+              ui: config.ui
             })};
             window.process = ${JSON.stringify({ env: { NODE_ENV: "test" } })};
           </script>
@@ -71,6 +91,33 @@ function serveTests(req, res) {
   });
 }
 
+/**
+ * @type {import("./scheduler.js").TaskCompleteCallback<import("./run-puppeteer-task.js").RunPuppetesterTaskOutput>}
+ */
+function writeCoverage(result) {
+  if (result.coverage === null) {
+    return;
+  }
+  const sourceFileEntries = result.coverage.filter(entry => {
+    const url = new URL(entry.url);
+    if (url.pathname.endsWith(".spec.js") || url.pathname === "/") {
+      return false;
+    }
+    return !/^\/(node_modules|puppeteester|client)/.test(url.pathname);
+  });
+  pti.write(sourceFileEntries);
+  spawnSync(
+    path.resolve("node_modules", ".bin", "nyc"),
+    ["report", "--reporter=html", "--reporter=text-summary"],
+    {
+      stdio: "inherit"
+    }
+  );
+  fse.copySync(path.resolve("coverage"), "/coverage");
+  fse.removeSync(path.resolve(".nyc_output"));
+  fse.removeSync(path.resolve("coverage"));
+}
+
 function main() {
   const app = express();
 
@@ -82,7 +129,7 @@ function main() {
   // client-side source code
   app.use("/src", express.static("/src"));
 
-  // puppeteester local node_modules
+  // puppeteester local node_modules (mostly used to serve Mocha)
   app.use(
     "/puppeteester/node_modules",
     express.static(path.resolve("node_modules"))
@@ -91,27 +138,29 @@ function main() {
   // puppeteester client side scripts
   app.use("/client", express.static(path.join("src", "client")));
 
+  // also make it easy to inspect the html coverage report
+  app.use("/coverage", express.static("/coverage"));
+
   // main endpoint
   app.get("*", serveTests);
 
   // tests are run as soon as the Express app is up
   const server = app.listen(EXPRESS_PORT, async () => {
     const task = new RunPuppeteerTask(
-      `http://localhost:${EXPRESS_PORT}`,
-      PUPPETEER_BROWSER_OPTIONS
+      `http://localhost:${EXPRESS_PORT}/`,
+      config.browserOptions,
+      config.coverage
     );
 
-    if (PUPPETEESTER_MODE === PuppeteesterMode.ci) {
-      const failures = await task.run();
+    if (config.mode === PuppeteesterMode.ci) {
+      const result = await task.run();
+      writeCoverage(result);
       server.close();
-      process.exit(failures > 0 ? 1 : 0);
+      process.exit(result.failures > 0 ? 1 : 0);
     } else {
-      /**
-       * any time something changes in the client side source dir,
-       * we schedule a test run
-       */
+      /** @type {Scheduler<import("./run-puppeteer-task.js").RunPuppetesterTaskOutput>} */
       const scheduler = new Scheduler(new DefaultTimer());
-      scheduler.start();
+      scheduler.start(writeCoverage);
       chokidar.watch("/src").on("all", () => {
         scheduler.schedule(task);
       });

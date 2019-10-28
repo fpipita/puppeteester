@@ -8,13 +8,20 @@ const BROWSER_OPTIONS_KEYS = new Set([
   "slowMo"
 ]);
 
+/**
+ * @typedef {Object} RunPuppetesterTaskOutput
+ * @property {number} failures number of failed tests.
+ * @property {puppeteer.CoverageEntry[] | null} coverage
+ */
+
 export class RunPuppeteerTask extends Task {
   /**
    *
    * @param {!string} testPageUrl
    * @param {puppeteer.BrowserOptions=} browserOptions
+   * @param {boolean=} reportCoverage
    */
-  constructor(testPageUrl, browserOptions) {
+  constructor(testPageUrl, browserOptions, reportCoverage = false) {
     super();
     this._done = this._done.bind(this);
     /** @type {?puppeteer.Browser} */
@@ -30,6 +37,7 @@ export class RunPuppeteerTask extends Task {
     );
     /** @type {Deferred<number>} */
     this._running = new Deferred();
+    this._reportCoverage = reportCoverage;
   }
 
   /**
@@ -41,7 +49,7 @@ export class RunPuppeteerTask extends Task {
   }
 
   /**
-   * @returns {Promise<number>}
+   * @returns {Promise<RunPuppetesterTaskOutput>}
    */
   async run() {
     this._running = new Deferred();
@@ -58,9 +66,7 @@ export class RunPuppeteerTask extends Task {
         ]
       });
     }
-    if (this._page !== null && !this._page.isClosed()) {
-      await this._page.reload();
-    } else {
+    if (this._page === null || this._page.isClosed()) {
       this._page = await this._browser.newPage();
       /**
        * we expose the window.__done__ callback on the page. This
@@ -86,8 +92,16 @@ export class RunPuppeteerTask extends Task {
          */
         console.error(error);
       });
-      await this._page.goto(this._testPageUrl);
     }
-    return this._running.promise;
+    if (this._reportCoverage) {
+      await this._page.coverage.startJSCoverage();
+    }
+    let coverage = null;
+    await this._page.goto(this._testPageUrl);
+    const failures = await this._running.promise;
+    if (this._reportCoverage) {
+      coverage = await this._page.coverage.stopJSCoverage();
+    }
+    return { failures, coverage };
   }
 }

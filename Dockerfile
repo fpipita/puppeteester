@@ -12,6 +12,7 @@ FROM base AS build
 RUN mkdir /src /node_modules
 VOLUME /src
 VOLUME /node_modules
+VOLUME /coverage
 
 EXPOSE 3000/tcp
 EXPOSE 9229/tcp
