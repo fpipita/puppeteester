@@ -74,7 +74,7 @@ function serveTests(req, res) {
 function main() {
   const app = express();
 
-  app.use(esm({ cache: false, nodeModulesRoot: "/node_modules" }));
+  app.use(esm("/src", { nodeModulesRoot: "/node_modules" }));
 
   // client-side node_modules
   app.use("/node_modules", express.static("/node_modules"));

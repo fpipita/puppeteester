@@ -7,7 +7,7 @@
   "author": "Francesco Pipita <francesco.pipita@gmail.com>",
   "license": "GPL-3.0",
   "dependencies": {
-    "@fpipita/esm-middleware": "^1.2.3",
+    "@fpipita/esm-middleware": "fpipita/esm-middleware",
     "chokidar": "^3.2.2",
     "express": "^4.17.1",
     "glob": "^7.1.5",
