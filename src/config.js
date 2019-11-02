@@ -71,14 +71,6 @@ const argv = yargs.env("PUPPETEESTER").options({
       "--inspect-brk switch). If set, debugging clients will be able to",
       "connect to the given address."
     ].join(" ")
-  },
-  "express-port": {
-    type: "number",
-    default: 3000,
-    desc: [
-      "Port that will be used by the local Express server to serve source ",
-      "code and specs."
-    ].join(" ")
   }
 }).argv;
 
@@ -97,8 +89,7 @@ const config = {
   nodeModules: path.resolve(argv["node-modules"]),
   sources: path.resolve(argv.sources),
   specsGlob: argv["specs-glob"],
-  inspectBrk: argv["inspect-brk"],
-  expressPort: argv["express-port"]
+  inspectBrk: argv["inspect-brk"]
 };
 
 export { config };

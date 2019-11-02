@@ -36,8 +36,6 @@ import { RunPuppeteerTask } from "./run-puppeteer-task.js";
  * @property {string | null} inspectBrk It takes a host and port in the format
  * host:port (same as the node --inspect-brk switch). If set, debugging
  * clients will be able to connect to the given address.
- * @property {number} expressPort port that will be used by the local Express
- * server to serve source code and specs.
  */
 
 /**
@@ -137,9 +135,10 @@ app.use(esm(config.sources, { nodeModulesRoot: config.nodeModules }));
 app.get("*", serveTests);
 
 // tests are run as soon as the Express app is up
-const server = app.listen(config.expressPort, async () => {
+const server = app.listen(async () => {
+  const address = /** @type {import("net").AddressInfo} */ (server.address());
   const task = new RunPuppeteerTask(
-    `http://localhost:${config.expressPort}/`,
+    `http://localhost:${address.port}/`,
     config.browserOptions,
     Boolean(config.coverage)
   );
