@@ -55,10 +55,7 @@ function serveTests(req, res) {
             content="width=device-width, initial-scale=1.0"
           />
           <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-          <link
-            rel="stylesheet"
-            href="/puppeteester/node_modules/mocha/mocha.css"
-          />
+          <link rel="stylesheet" href="/puppeteester/vendor/mocha.css" />
           <title>Condomani - testing</title>
           <script type="module">
             window.__puppeteester__ = ${JSON.stringify({
@@ -67,7 +64,7 @@ function serveTests(req, res) {
             })};
             window.process = ${JSON.stringify({ env: { NODE_ENV: "test" } })};
           </script>
-          <script type="module" src="/puppeteester/client/setup.js"></script>
+          <script type="module" src="/puppeteester/setup.js"></script>
           ${files.map(
             file =>
               `<script type="module" src="${file.replace(
@@ -121,21 +118,16 @@ function writeCoverage(result) {
 
 const app = express();
 
-app.use(esm(config.sources, { nodeModulesRoot: config.nodeModules }));
+// puppeteester client side scripts
+app.use("/puppeteester", express.static(path.join("src", "client")));
 
 // also make it easy to inspect the html coverage report
 if (config.coverage) {
   app.use("/coverage", express.static(config.coverage));
 }
 
-// puppeteester local node_modules (mostly used to serve Mocha)
-app.use(
-  "/puppeteester/node_modules",
-  express.static(path.resolve("node_modules"))
-);
-
-// puppeteester client side scripts
-app.use("/puppeteester/client", express.static(path.join("src", "client")));
+// handles source code and specs
+app.use(esm(config.sources, { nodeModulesRoot: config.nodeModules }));
 
 // main endpoint
 app.get("*", serveTests);

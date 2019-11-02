@@ -14,7 +14,6 @@
     "fs-extra": "^8.1.0",
     "glob": "^7.1.5",
     "minimatch": "^3.0.4",
-    "mocha": "^6.2.2",
     "nyc": "^14.1.1",
     "puppeteer-core": "^2.0.0",
     "puppeteer-to-istanbul": "^1.2.2",
@@ -32,6 +31,7 @@
     "esm": "^3.2.25",
     "husky": ">=1",
     "lint-staged": "^9.4.2",
+    "mocha": "^6.2.2",
     "nodemon": "^1.19.4",
     "prettier": "^1.18.2"
   },

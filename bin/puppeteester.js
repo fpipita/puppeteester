@@ -33,7 +33,7 @@ args.push(
   "fpipita/chrome",
   "node",
   "--experimental-modules",
-  "./src/test-runner.js",
+  "./src/puppeteester.js",
   "--sources",
   "/src",
   "--node-modules",

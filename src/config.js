@@ -71,10 +71,10 @@ const argv = yargs.env("PUPPETEESTER").options({
   }
 }).argv;
 
-/** @type {import("./test-runner").PuppeteesterConfig} */
+/** @type {import("./puppeteester").PuppeteesterConfig} */
 const config = {
   ui: /** @type {import("mocha").Interface} */ (argv.ui),
-  mode: /** @type {import("./test-runner").PuppeteesterMode} */ (argv.mode),
+  mode: /** @type {import("./puppeteester").PuppeteesterMode} */ (argv.mode),
   // @ts-ignore
   coverage: argv.coverage ? path.resolve(argv.coverage) : null,
   browserOptions: {
