@@ -93,8 +93,11 @@ function serveTests(req, res) {
  * @type {import("./scheduler.js").TaskCompleteCallback<import("./run-puppeteer-task.js").RunPuppetesterTaskOutput>}
  */
 function writeCoverage(result) {
-  if (result.coverage === null) {
+  if (!result.coverage) {
     return;
+  }
+  if (!config.coverage || !path.isAbsolute(config.coverage)) {
+    throw new TypeError("--coverage: absolute path expected");
   }
   const sourceFileEntries = result.coverage.filter(entry => {
     const url = new URL(entry.url);
@@ -111,7 +114,7 @@ function writeCoverage(result) {
       stdio: "inherit"
     }
   );
-  fse.copySync(path.resolve("coverage"), "/coverage");
+  fse.copySync(path.resolve("coverage"), config.coverage);
   fse.removeSync(path.resolve(".nyc_output"));
   fse.removeSync(path.resolve("coverage"));
 }
@@ -122,7 +125,7 @@ app.use(esm(config.sources, { nodeModulesRoot: config.nodeModules }));
 
 // also make it easy to inspect the html coverage report
 if (config.coverage) {
-  app.use(config.coverage, express.static("/coverage"));
+  app.use("/coverage", express.static(config.coverage));
 }
 
 // puppeteester local node_modules (mostly used to serve Mocha)
