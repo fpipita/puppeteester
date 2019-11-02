@@ -18,23 +18,27 @@ import { RunPuppeteerTask } from "./run-puppeteer-task.js";
  */
 
 /**
- * Represent the publicly available options
- *
- * @typedef {Object} PuppeteesterConfig
- * @property {string} sources
- * @property {string} nodeModules
- * @property {string} specsGlob
- * @property {import("mocha").Interface} ui
- * @property {PuppeteesterMode} mode
- * @property {string | null} coverage,
+ * @typedef {Object} PuppeteesterConfig puppeteester configuration object.
+ * @property {string} sources absolute path to your app's source code and
+ * specs.
+ * @property {string} nodeModules absolute path to your app's `node_modules`
+ * folder.
+ * @property {string} specsGlob glob pattern to filter your spec files. This
+ * will be joined with the value provided in `sources`.
+ * @property {import("mocha").Interface} ui sets the Mocha's interface that
+ * will be made available to your test files.
+ * @property {PuppeteesterMode} mode select `ci` to run tests once and report
+ * an exit status of either 0 on succes or 1 on failure to the calling process.
+ * Select `watch` to schedule a new test run on each file change.
+ * @property {string | null} coverage if set, it has to be an absolute path
+ * where puppeteester will output a code coverage report of your source code.
  * @property {import("puppeteer-core").BrowserOptions} browserOptions
- * @property {string | null} inspectBrk
+ * @property {string | null} inspectBrk It takes a host and port in the format
+ * host:port (same as the node --inspect-brk switch). If set, debugging
+ * clients will be able to connect to the given address.
+ * @property {number} expressPort port that will be used by the local Express
+ * server to serve source code and specs.
  */
-
-/**
- * local constants
- */
-const EXPRESS_PORT = 3000;
 
 /**
  *
@@ -133,9 +137,9 @@ app.use(esm(config.sources, { nodeModulesRoot: config.nodeModules }));
 app.get("*", serveTests);
 
 // tests are run as soon as the Express app is up
-const server = app.listen(EXPRESS_PORT, async () => {
+const server = app.listen(config.expressPort, async () => {
   const task = new RunPuppeteerTask(
-    `http://localhost:${EXPRESS_PORT}/`,
+    `http://localhost:${config.expressPort}/`,
     config.browserOptions,
     Boolean(config.coverage)
   );

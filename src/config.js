@@ -18,7 +18,10 @@ const argv = yargs.env("PUPPETEESTER").options({
     choices: ["bdd", "tdd", "qunit"],
     type: "string",
     default: "tdd",
-    desc: "Sets the Mocha's interface made available to your test files."
+    desc: [
+      "Sets the Mocha's interface that will be made available ",
+      "to your test files."
+    ].join(" ")
   },
   width: {
     alias: "w",
@@ -38,7 +41,7 @@ const argv = yargs.env("PUPPETEESTER").options({
     default: "**/*.spec.js",
     desc: [
       "Glob pattern to filter your spec files. This will be",
-      "joined with the value provided in --src."
+      "joined with the value provided in --sources."
     ].join(" ")
   },
   sources: {
@@ -56,8 +59,8 @@ const argv = yargs.env("PUPPETEESTER").options({
     type: "string",
     default: null,
     desc: [
-      "If set, puppeteester will output a code coverage report of",
-      "your source code to the specified absolute path in this option."
+      "If set, it has to be an absolute path where puppeteester will",
+      "output a code coverage report of your source code"
     ].join(" ")
   },
   "inspect-brk": {
@@ -67,6 +70,14 @@ const argv = yargs.env("PUPPETEESTER").options({
       "It takes a host and port in the format host:port (same as the node",
       "--inspect-brk switch). If set, debugging clients will be able to",
       "connect to the given address."
+    ].join(" ")
+  },
+  "express-port": {
+    type: "number",
+    default: 3000,
+    desc: [
+      "Port that will be used by the local Express server to serve source ",
+      "code and specs."
     ].join(" ")
   }
 }).argv;
@@ -86,7 +97,8 @@ const config = {
   nodeModules: path.resolve(argv["node-modules"]),
   sources: path.resolve(argv.sources),
   specsGlob: argv["specs-glob"],
-  inspectBrk: argv["inspect-brk"]
+  inspectBrk: argv["inspect-brk"],
+  expressPort: argv["express-port"]
 };
 
 export { config };
