@@ -1,7 +1,7 @@
 import assert from "assert";
-import { MockTimer } from "../src/timer.js";
+import { MockTimer } from "../../src/lib/timer.js";
 
-test("mock timer", async () => {
+test("MockTimer class", async () => {
   const timer = new MockTimer();
   let called = false;
   (async () => {

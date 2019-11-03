@@ -1,3 +1,14 @@
 language: node_js
+
+os:
+  - linux
+  - windows
+
+addons:
+  chrome: "beta"
+
+before_install:
+  - yarn --cwd example/
+
 node_js:
   - "node"

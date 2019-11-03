@@ -7,5 +7,5 @@
     "strictNullChecks": true
   },
   "include": ["src", "bin/puppeteester.js"],
-  "exclude": ["src/client/vendor/*"]
+  "exclude": ["src/lib/client/vendor/*"]
 }

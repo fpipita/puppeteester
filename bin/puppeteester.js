@@ -4,7 +4,7 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import { spawnSync } from "child_process";
 import which from "which";
-import { config } from "../src/config.js";
+import { config } from "../src/cli/config.js";
 
 const puppeteester = dirname(dirname(fileURLToPath(import.meta.url)));
 

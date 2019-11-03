@@ -1,8 +1,8 @@
 import assert from "assert";
-import { Scheduler, TestTask } from "../src/scheduler.js";
-import { MockTimer } from "../src/timer.js";
+import { Scheduler, TestTask } from "../../src/lib/scheduler.js";
+import { MockTimer } from "../../src/lib/timer.js";
 
-suite("test runner class", () => {
+suite("Scheduler class", () => {
   test("executes duplicate tasks once", async () => {
     const timer = new MockTimer();
     const scheduler = new Scheduler(timer, 100);

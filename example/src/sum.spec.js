@@ -3,6 +3,10 @@ import chai from "chai";
 
 suite("sum specs", () => {
   test("adds some numbers", () => {
-    chai.expect(sum(1, 2)).to.equal(3);
+    chai.assert.equal(sum(1, 2), 3);
+  });
+
+  test("failing spec", () => {
+    chai.assert.equal(sum(1, 2), 4);
   });
 });

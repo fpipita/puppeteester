@@ -8,11 +8,16 @@ const BROWSER_OPTIONS_KEYS = new Set([
   "slowMo"
 ]);
 
-/**
- * @typedef {Object} RunPuppetesterTaskOutput
- * @property {number} failures number of failed tests.
- * @property {puppeteer.CoverageEntry[] | null} coverage
- */
+export class RunPuppetesterTaskOutput {
+  /**
+   * @param {number} failures number of failed tests.
+   * @param {puppeteer.CoverageEntry[] | null} coverage
+   */
+  constructor(failures, coverage) {
+    this.failures = failures;
+    this.coverage = coverage;
+  }
+}
 
 export class RunPuppeteerTask extends Task {
   /**
@@ -80,18 +85,10 @@ export class RunPuppeteerTask extends Task {
         for (let x of msg.args()) {
           args.push(await x.jsonValue());
         }
-        console.log(...args);
+        this.emit("console", { args });
       });
-      this._page.on("error", error => {
-        console.error(error);
-      });
-      this._page.on("pageerror", error => {
-        /**
-         * uncaught errors (the ones that get printed to the
-         * browser console, e.g. a reference error)
-         */
-        console.error(error);
-      });
+      this._page.on("error", this.emit.bind(this, "console"));
+      this._page.on("pageerror", this.emit.bind(this, "console"));
     }
     if (this._reportCoverage) {
       await this._page.coverage.startJSCoverage();
@@ -102,6 +99,13 @@ export class RunPuppeteerTask extends Task {
     if (this._reportCoverage) {
       coverage = await this._page.coverage.stopJSCoverage();
     }
-    return { failures, coverage };
+    await this._page.close();
+    return new RunPuppetesterTaskOutput(failures, coverage);
+  }
+
+  async cancel() {
+    if (this._browser) {
+      await this._browser.close();
+    }
   }
 }

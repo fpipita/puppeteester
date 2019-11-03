@@ -1,15 +1,20 @@
 import { EventEmitter } from "events";
 
-export const TASK_COMPLETE_EVENT = "taskcomplete";
-
 /**
  * @template T
  */
-export class Task {
+export class Task extends EventEmitter {
   /**
    * @returns {Promise<T>}
    */
   async run() {
+    throw new TypeError("Abstract method");
+  }
+
+  /**
+   * @return {Promise}
+   */
+  async cancel() {
     throw new TypeError("Abstract method");
   }
 }
@@ -45,22 +50,21 @@ export class Scheduler extends EventEmitter {
     this._queue = [...new Set([...this._queue, task])];
   }
 
-  /**
-   * @param {TaskCompleteCallback<T>=} callback
-   */
-  async start(callback) {
+  async shutdown() {
+    await this._pending;
+    this._queue.forEach(task => task.cancel());
+  }
+
+  async start() {
     if (this._running) {
       return;
-    }
-    if (typeof callback === "function") {
-      this.on(TASK_COMPLETE_EVENT, callback);
     }
     this._running = true;
     do {
       const task = this._queue.shift();
       if (task) {
-        const result = await task.run();
-        this.emit(TASK_COMPLETE_EVENT, result);
+        const result = await (this._pending = task.run());
+        this.emit("taskcomplete", result);
       } else {
         await this._timer.wait(this._polling);
       }

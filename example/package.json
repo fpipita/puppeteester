@@ -9,10 +9,6 @@
     "chai": "^4.2.0"
   },
   "dependencies": {
-    "@fpipita/puppeteester": "fpipita/puppeteester",
     "lodash-es": "^4.17.15"
-  },
-  "scripts": {
-    "test": "puppeteester --sources ./src --node-modules ./node-modules"
   }
 }
