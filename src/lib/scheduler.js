@@ -31,12 +31,6 @@ export class Scheduler extends EventEmitter {
     this._queue = [...new Set([...this._queue, task])];
   }
 
-  async shutdown() {
-    this._running = true;
-    await this._pending;
-    this._queue.forEach(task => task.cancel());
-  }
-
   async start() {
     if (this._running) {
       return;
@@ -45,8 +39,13 @@ export class Scheduler extends EventEmitter {
     do {
       const task = this._queue.shift();
       if (task) {
-        const result = await (this._pending = task.run());
-        this.emit("taskcomplete", result);
+        try {
+          const result = await (this._pending = task.run());
+          this.emit("taskcomplete", result);
+        } catch (e) {
+          await task.cancel();
+          this.emit("taskerror", task);
+        }
       } else {
         await this._timer.wait(this._polling);
       }

@@ -122,10 +122,10 @@ class PuppeteesterApplication {
 
 class PuppeteesterReport {
   /**
-   * @param {PuppeteesterConfig} config
    * @param {import("./run-puppeteer-task.js").RunPuppetesterTaskOutput} result
+   * @param {PuppeteesterConfig} config
    */
-  constructor(config, result) {
+  constructor(result, config) {
     /** @type {number} */
     this.failures = result.failures;
     /** @type {import("puppeteer-core").CoverageEntry[]} */
@@ -140,7 +140,7 @@ class PuppeteesterReport {
         return false;
       }
       if (pathname.startsWith("/puppeteester")) {
-        // esclude puppeteester client side code
+        // exclude puppeteester client side code
         return false;
       }
       if (pathname.startsWith("/node_modules")) {
@@ -167,7 +167,7 @@ class PuppeteesterWatcher extends EventEmitter {
     this._scheduler.on("taskcomplete", (
       /** @type {import("./run-puppeteer-task").RunPuppetesterTaskOutput} */ event
     ) => {
-      this.emit("taskcomplete", new PuppeteesterReport(config, event));
+      this.emit("taskcomplete", new PuppeteesterReport(event, config));
     });
     this._scheduler.start();
     this._watcher = chokidar.watch(config.sources);
@@ -222,7 +222,7 @@ export class Puppeteester extends EventEmitter {
     app.task.on("console", this.emit.bind(this, "console"));
     try {
       const result = await app.task.run();
-      return new PuppeteesterReport(this._config, result);
+      return new PuppeteesterReport(result, this._config);
     } finally {
       app.server.close();
       await app.task.cancel();

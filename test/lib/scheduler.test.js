@@ -1,6 +1,6 @@
 import assert from "assert";
 import { Scheduler } from "../../src/lib/scheduler.js";
-import { TimedTask } from "../../src/lib/task.js";
+import { TimedTask, ThrowingTask } from "../../src/lib/task.js";
 import { MockTimer } from "../../src/lib/timer.js";
 
 suite("Scheduler class", () => {
@@ -38,5 +38,19 @@ suite("Scheduler class", () => {
     await timer.flush(100);
     // 300ms: task (2) completes
     assert.equal(2, task._calls);
+  });
+
+  test("exception handling", async () => {
+    const timer = new MockTimer();
+    const scheduler = new Scheduler(timer, 100);
+    const task = new ThrowingTask();
+    scheduler.schedule(task);
+    scheduler.start();
+    try {
+      await scheduler._pending;
+      assert.fail();
+    } catch {
+      assert.ok(task.canceled);
+    }
   });
 });

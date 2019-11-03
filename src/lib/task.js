@@ -40,3 +40,13 @@ export class TimedTask extends Task {
     this._callback(this._calls);
   }
 }
+
+export class ThrowingTask extends Task {
+  async run() {
+    throw new Error();
+  }
+
+  async cancel() {
+    this.canceled = true;
+  }
+}
