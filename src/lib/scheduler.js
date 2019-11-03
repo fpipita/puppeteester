@@ -1,3 +1,4 @@
+import assert from "assert";
 import { EventEmitter } from "events";
 
 /**
@@ -21,6 +22,7 @@ export class Scheduler extends EventEmitter {
     this._running = false;
     this._timer = timer;
     this._polling = polling;
+    this._stopped = false;
   }
 
   /**
@@ -28,13 +30,30 @@ export class Scheduler extends EventEmitter {
    * @param {import("./task").Task<T>} task
    */
   schedule(task) {
+    assert.ok(!this._stopped, "scheduler has been stopped");
     this._queue = [...new Set([...this._queue, task])];
   }
 
-  async start() {
-    if (this._running) {
-      return;
+  async shutdown() {
+    this._running = false;
+    this._stopped = true;
+    try {
+      await this._pending;
+    } catch {
+      this._pending = null;
+    } finally {
+      let task;
+      while ((task = this._queue.shift())) {
+        await task.cancel();
+      }
     }
+  }
+
+  async start() {
+    assert.ok(
+      !this._running && !this._stopped,
+      "scheduler already running or stopped"
+    );
     this._running = true;
     do {
       const task = this._queue.shift();

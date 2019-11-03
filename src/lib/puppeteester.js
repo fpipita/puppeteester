@@ -179,8 +179,9 @@ class PuppeteesterWatcher extends EventEmitter {
   /**
    * @returns {Promise}
    */
-  close() {
-    return this._watcher.close();
+  async close() {
+    await this._watcher.close();
+    await this._scheduler.shutdown();
   }
 }
 
