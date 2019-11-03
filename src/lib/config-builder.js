@@ -8,7 +8,8 @@ export class PuppeteesterConfigBuilder {
     this._config = {
       coverage: null,
       browserOptions: {},
-      inspectBrk: null,
+      chromeRemoteDebuggingAddress: "0.0.0.0",
+      chromeRemoteDebuggingPort: 9222,
       nodeModules: "",
       sources: "",
       ui: "tdd",
@@ -33,11 +34,13 @@ export class PuppeteesterConfigBuilder {
     return this;
   }
 
-  /**
-   * @param {string | null} inspectBrk
-   */
-  inspectBrk(inspectBrk) {
-    this._config.inspectBrk = inspectBrk;
+  chromeRemoteDebuggingAddress(chromeRemoteDebuggingAddress) {
+    this._config.chromeRemoteDebuggingAddress = chromeRemoteDebuggingAddress;
+    return this;
+  }
+
+  chromeRemoteDebuggingPort(chromeRemoteDebuggingPort) {
+    this._config.chromeRemoteDebuggingPort = chromeRemoteDebuggingPort;
     return this;
   }
 

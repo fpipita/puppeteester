@@ -58,14 +58,15 @@ const argv = yargs
         "output a code coverage report of your source code"
       ].join(" ")
     },
-    "inspect-brk": {
+    "chrome-remote-debugging-address": {
       type: "string",
-      default: null,
-      desc: [
-        "It takes a host and port in the format host:port (same as the node",
-        "--inspect-brk switch). If set, debugging clients will be able to",
-        "connect to the given address."
-      ].join(" ")
+      default: "0.0.0.0",
+      desc: "Chrome remote debuggin address."
+    },
+    "chrome-remote-debugging-port": {
+      type: "number",
+      default: 9222,
+      desc: "Chrome remote debugging port."
     },
     "chrome-executable-path": {
       type: "string",
@@ -83,12 +84,13 @@ const argv = yargs
         width: argv.width
       }
     })
-    .inspectBrk(argv["inspect-brk"])
     .nodeModules(path.resolve(argv["node-modules"]))
     .sources(path.resolve(argv.sources))
     .specsGlob(argv["specs-glob"])
     .ui(/** @type {import("mocha").Interface} */ (argv.ui))
-    .chromeExecutablePath(argv["chrome-executable-path"]);
+    .chromeExecutablePath(argv["chrome-executable-path"])
+    .chromeRemoteDebuggingAddress(argv["chrome-remote-debugging-address"])
+    .chromeRemoteDebuggingPort(argv["chrome-remote-debugging-port"]);
   const puppeteester = new Puppeteester(configBuilder);
   puppeteester.on("console", event => {
     console.log(...event.args);

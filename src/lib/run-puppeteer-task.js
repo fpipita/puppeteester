@@ -54,13 +54,18 @@ export class RunPuppeteerTask extends Task {
           "--no-sandbox",
           "--disable-setuid-sandbox",
           "--disable-dev-shm-usage",
-          "--remote-debugging-port=9222",
-          "--remote-debugging-address=0.0.0.0"
+          `--remote-debugging-port=${this._config.chromeRemoteDebuggingPort}`,
+          `--remote-debugging-address=${this._config.chromeRemoteDebuggingAddress}`
         ]
       });
     }
     if (this._page === null || this._page.isClosed()) {
-      this._page = await this._browser.newPage();
+      const pages = await this._browser.pages();
+      if (pages.length > 0) {
+        this._page = pages[0];
+      } else {
+        this._page = await this._browser.newPage();
+      }
       /**
        * we expose the window.__done__ callback on the page. This
        * callback is invoked by Mocha when the test run completes
@@ -87,7 +92,6 @@ export class RunPuppeteerTask extends Task {
     if (this._config.coverage) {
       coverage = await this._page.coverage.stopJSCoverage();
     }
-    await this._page.close();
     return new RunPuppetesterTaskOutput(failures, coverage);
   }
 

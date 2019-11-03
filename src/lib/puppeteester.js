@@ -26,9 +26,8 @@ import { PuppeteesterConfigBuilder } from "./config-builder.js";
  * @property {string | null} coverage if set, it has to be an absolute path
  * where puppeteester will output a code coverage report of your source code.
  * @property {import("puppeteer-core").BrowserOptions} browserOptions
- * @property {string | null} inspectBrk It takes a host and port in the format
- * host:port (same as the node --inspect-brk switch). If set, debugging
- * clients will be able to connect to the given address.
+ * @property {number} chromeRemoteDebuggingPort
+ * @property {string} chromeRemoteDebuggingAddress
  * @property {string} chromeExecutablePath absolute path to the Chrome
  * executable.
  */
@@ -52,7 +51,7 @@ const serveTests = config => (req, res) => {
           />
           <meta http-equiv="X-UA-Compatible" content="ie=edge" />
           <link rel="stylesheet" href="/puppeteester/vendor/mocha.css" />
-          <title>Condomani - testing</title>
+          <title>Puppeteester</title>
           <script type="module">
             window.__puppeteester__ = ${JSON.stringify({
               headless,
