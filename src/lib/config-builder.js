@@ -1,6 +1,6 @@
 import assert from "assert";
 import path from "path";
-import { findChromeExecutablePath } from "./utils";
+import { findChromeExecutablePath } from "./utils.js";
 
 export class PuppeteesterConfigBuilder {
   constructor() {
