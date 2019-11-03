@@ -1,12 +1,13 @@
 import assert from "assert";
-import { Scheduler, TestTask } from "../../src/lib/scheduler.js";
+import { Scheduler } from "../../src/lib/scheduler.js";
+import { TimedTask } from "../../src/lib/task.js";
 import { MockTimer } from "../../src/lib/timer.js";
 
 suite("Scheduler class", () => {
   test("executes duplicate tasks once", async () => {
     const timer = new MockTimer();
     const scheduler = new Scheduler(timer, 100);
-    const task = new TestTask(timer);
+    const task = new TimedTask(timer);
     scheduler.schedule(task); // (1)
     scheduler.schedule(task); // (2) is rejected
 
@@ -21,7 +22,7 @@ suite("Scheduler class", () => {
   test("scheduling new tasks", async () => {
     const timer = new MockTimer();
     const scheduler = new Scheduler(timer, 100);
-    const task = new TestTask(timer);
+    const task = new TimedTask(timer);
     scheduler.start();
     scheduler.schedule(task);
 

@@ -1,5 +1,5 @@
 import puppeteer from "puppeteer-core";
-import { Task } from "./scheduler.js";
+import { Task } from "./task.js";
 import { Deferred } from "./deferred.js";
 
 export class RunPuppetesterTaskOutput {
