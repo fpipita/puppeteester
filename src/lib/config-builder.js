@@ -1,5 +1,6 @@
 import assert from "assert";
 import path from "path";
+import { findChromeExecutablePath } from "./utils";
 
 export class PuppeteesterConfigBuilder {
   constructor() {
@@ -11,7 +12,8 @@ export class PuppeteesterConfigBuilder {
       nodeModules: "",
       sources: "",
       ui: "tdd",
-      specsGlob: "**/*.spec.js"
+      specsGlob: "**/*.spec.js",
+      chromeExecutablePath: findChromeExecutablePath() || ""
     };
   }
 
@@ -71,6 +73,11 @@ export class PuppeteesterConfigBuilder {
     return this;
   }
 
+  chromeExecutablePath(chromeExecutablePath) {
+    this._config.chromeExecutablePath = chromeExecutablePath;
+    return this;
+  }
+
   /**
    * @returns {import("./puppeteester").PuppeteesterConfig}
    */
@@ -86,6 +93,11 @@ export class PuppeteesterConfigBuilder {
     assert.ok(
       this._config.specsGlob,
       `specsGlob: expected glob pattern, got ${this._config.specsGlob}`
+    );
+    assert.ok(
+      this._config.chromeExecutablePath &&
+        path.isAbsolute(this._config.chromeExecutablePath),
+      "chromeExecutablePath: missing or invalid path"
     );
     return this._config;
   }

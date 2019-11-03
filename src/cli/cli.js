@@ -1,6 +1,7 @@
 import path from "path";
 import yargs from "yargs";
 import { Puppeteester, PuppeteesterConfigBuilder } from "../lib/index.js";
+import { findChromeExecutablePath } from "../lib/utils.js";
 
 const argv = yargs
   .env("PUPPETEESTER")
@@ -65,6 +66,11 @@ const argv = yargs
         "--inspect-brk switch). If set, debugging clients will be able to",
         "connect to the given address."
       ].join(" ")
+    },
+    "chrome-executable-path": {
+      type: "string",
+      default: findChromeExecutablePath(),
+      desc: "Absolute path to the Chrome executable."
     }
   }).argv;
 
@@ -81,7 +87,8 @@ const argv = yargs
     .nodeModules(path.resolve(argv["node-modules"]))
     .sources(path.resolve(argv.sources))
     .specsGlob(argv["specs-glob"])
-    .ui(/** @type {import("mocha").Interface} */ (argv.ui));
+    .ui(/** @type {import("mocha").Interface} */ (argv.ui))
+    .chromeExecutablePath(argv["chrome-executable-path"]);
   const puppeteester = new Puppeteester(configBuilder);
   puppeteester.on("console", event => {
     console.log(...event.args);

@@ -26,5 +26,19 @@ suite("Puppeteester class", () => {
       assert.equal(1, result.coverage.length);
       assert.ok(result.coverage[0].url.endsWith("sum.js"));
     });
+
+    test("puppeteer thrown exceptions propagation", async () => {
+      const puppeteester = new Puppeteester(
+        new PuppeteesterConfigBuilder()
+          .nodeModules(path.resolve("example", "node_modules"))
+          .sources(path.resolve("example", "src"))
+          .chromeExecutablePath("/foo")
+      );
+      try {
+        await puppeteester.ci();
+        assert.fail();
+        // eslint-disable-next-line no-empty
+      } catch {}
+    });
   });
 });

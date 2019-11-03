@@ -2,12 +2,6 @@ import puppeteer from "puppeteer-core";
 import { Task } from "./scheduler.js";
 import { Deferred } from "./deferred.js";
 
-const BROWSER_OPTIONS_KEYS = new Set([
-  "ignoreHTTPSErrors",
-  "defaultViewport",
-  "slowMo"
-]);
-
 export class RunPuppetesterTaskOutput {
   /**
    * @param {number} failures number of failed tests.
@@ -23,26 +17,20 @@ export class RunPuppeteerTask extends Task {
   /**
    *
    * @param {!string} testPageUrl
-   * @param {puppeteer.BrowserOptions=} browserOptions
-   * @param {boolean=} reportCoverage
+   * @param {import("./puppeteester.js").PuppeteesterConfig} config
    */
-  constructor(testPageUrl, browserOptions, reportCoverage = false) {
+  constructor(testPageUrl, config) {
     super();
     this._done = this._done.bind(this);
+    /** @type {import("./puppeteester.js").PuppeteesterConfig} */
+    this._config = config;
     /** @type {?puppeteer.Browser} */
     this._browser = null;
     /** @type {?puppeteer.Page} */
     this._page = null;
     this._testPageUrl = testPageUrl;
-    /** @type {puppeteer.BrowserOptions} */
-    this._browserOptions = Object.fromEntries(
-      Object.entries(browserOptions || {}).filter(([k]) =>
-        BROWSER_OPTIONS_KEYS.has(k)
-      )
-    );
     /** @type {Deferred<number>} */
     this._running = new Deferred();
-    this._reportCoverage = reportCoverage;
   }
 
   /**
@@ -60,8 +48,8 @@ export class RunPuppeteerTask extends Task {
     this._running = new Deferred();
     if (this._browser === null || !this._browser.isConnected()) {
       this._browser = await puppeteer.launch({
-        ...this._browserOptions,
-        executablePath: "/usr/bin/google-chrome",
+        ...this._config.browserOptions,
+        executablePath: this._config.chromeExecutablePath,
         args: [
           "--no-sandbox",
           "--disable-setuid-sandbox",
@@ -90,13 +78,13 @@ export class RunPuppeteerTask extends Task {
       this._page.on("error", this.emit.bind(this, "console"));
       this._page.on("pageerror", this.emit.bind(this, "console"));
     }
-    if (this._reportCoverage) {
+    if (this._config.coverage) {
       await this._page.coverage.startJSCoverage();
     }
     let coverage = null;
     await this._page.goto(this._testPageUrl);
     const failures = await this._running.promise;
-    if (this._reportCoverage) {
+    if (this._config.coverage) {
       coverage = await this._page.coverage.stopJSCoverage();
     }
     await this._page.close();

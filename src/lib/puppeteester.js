@@ -16,11 +16,11 @@ import { PuppeteesterConfigBuilder } from "./config-builder.js";
 /**
  * @typedef {Object} PuppeteesterConfig puppeteester configuration object.
  * @property {string} sources absolute path to your app's source code and
- * specs.
+ * specs folder.
  * @property {string} nodeModules absolute path to your app's `node_modules`
  * folder.
- * @property {string} specsGlob glob pattern to filter your spec files. This
- * will be joined with the value provided in `sources`.
+ * @property {string} specsGlob optional, glob pattern to filter your spec
+ * files. This will be joined with the value provided in `sources`.
  * @property {import("mocha").Interface} ui sets the Mocha's interface that
  * will be made available to your test files.
  * @property {string | null} coverage if set, it has to be an absolute path
@@ -29,6 +29,8 @@ import { PuppeteesterConfigBuilder } from "./config-builder.js";
  * @property {string | null} inspectBrk It takes a host and port in the format
  * host:port (same as the node --inspect-brk switch). If set, debugging
  * clients will be able to connect to the given address.
+ * @property {string} chromeExecutablePath absolute path to the Chrome
+ * executable.
  */
 
 /**
@@ -205,8 +207,7 @@ export class Puppeteester extends EventEmitter {
         const address = /** @type {import("net").AddressInfo} */ (server.address());
         const task = new RunPuppeteerTask(
           `http://localhost:${address.port}`,
-          this._config.browserOptions,
-          Boolean(this._config.coverage)
+          this._config
         );
         resolve(new PuppeteesterApplication(server, task));
       });
@@ -219,10 +220,13 @@ export class Puppeteester extends EventEmitter {
   async ci() {
     const app = await this._start();
     app.task.on("console", this.emit.bind(this, "console"));
-    const result = await app.task.run();
-    app.server.close();
-    await app.task.cancel();
-    return new PuppeteesterReport(this._config, result);
+    try {
+      const result = await app.task.run();
+      return new PuppeteesterReport(this._config, result);
+    } finally {
+      app.server.close();
+      await app.task.cancel();
+    }
   }
 
   /**
