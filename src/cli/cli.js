@@ -61,7 +61,7 @@ const argv = yargs
     "chrome-remote-debugging-address": {
       type: "string",
       default: "0.0.0.0",
-      desc: "Chrome remote debuggin address."
+      desc: "Chrome remote debugging address."
     },
     "chrome-remote-debugging-port": {
       type: "number",
