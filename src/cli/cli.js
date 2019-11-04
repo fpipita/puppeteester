@@ -7,7 +7,7 @@ const argv = yargs
   .env("PUPPETEESTER")
   .command("$0 <mode>", "starts puppeteester", yargs => {
     yargs.positional("mode", {
-      desc: "define puppeteester's the run mode",
+      desc: "define puppeteester's run mode",
       type: "string",
       choices: ["ci", "watch"]
     });
