@@ -14,4 +14,6 @@ The test runner will load the specs from any `.spec.js` files located under the 
 
 ## Debugging your tests
 
-Run `yarn debug`, then open Chrome, visit the `chrome://inspect` url and add the host `127.0.0.1:9222` to the target discovery servers list. Finally, inspect the `Puppeteester` target to debug your source code and specs.
+1. Run `yarn debug`, then open Chrome and visit the `chrome://inspect` url;
+2. Add the host `127.0.0.1:9222` to the target discovery servers list;
+3. Inspect the `Puppeteester` target to debug your source code and specs;

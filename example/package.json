@@ -6,14 +6,13 @@
   "author": "Francesco Pipita <francesco.pipita@gmail.com>",
   "license": "GPL-3.0",
   "devDependencies": {
-    "@fpipita/puppeteester": "fpipita/puppeteester",
     "chai": "^4.2.0"
   },
   "dependencies": {
     "lodash-es": "^4.17.15"
   },
   "scripts": {
-    "test": "puppeteester --sources ./src --node-modules ./node_modules ci && echo 'tests passed' || echo 'tests failed'",
-    "debug": "puppeteester --sources ./src --node-modules ./node_modules watch"
+    "test": "../bin/puppeteester --sources ./src --node-modules ./node_modules ci && echo 'tests passed' || echo 'tests failed'",
+    "debug": "../bin/puppeteester --sources ./src --node-modules ./node_modules watch"
   }
 }

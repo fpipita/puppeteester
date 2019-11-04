@@ -6,6 +6,6 @@
     "checkJs": true,
     "strictNullChecks": true
   },
-  "include": ["src", "bin/puppeteester.js"],
+  "include": ["src"],
   "exclude": ["src/lib/client/vendor/*"]
 }
