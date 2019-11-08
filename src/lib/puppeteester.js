@@ -23,6 +23,7 @@ import { PuppeteesterConfigBuilder } from "./config-builder.js";
  * files. This will be joined with the value provided in `sources`.
  * @property {import("mocha").Interface} ui sets the Mocha's interface that
  * will be made available to your test files.
+ * @property {boolean} disableCaching if true, modules won't be cached.
  * @property {string | null} coverage if set, it has to be an absolute path
  * where puppeteester will output a code coverage report of your source code.
  * @property {import("puppeteer-core").BrowserOptions} browserOptions
@@ -101,7 +102,12 @@ function createApp(config) {
   }
 
   // handles source code and specs
-  app.use(esm(config.sources, { nodeModulesRoot: config.nodeModules }));
+  app.use(
+    esm(config.sources, {
+      nodeModulesRoot: config.nodeModules,
+      disableCaching: config.disableCaching
+    })
+  );
 
   // main endpoint
   app.get("*", serveTests(config));

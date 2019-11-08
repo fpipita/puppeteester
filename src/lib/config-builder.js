@@ -12,6 +12,7 @@ export class PuppeteesterConfigBuilder {
       chromeRemoteDebuggingPort: 9222,
       nodeModules: "",
       sources: "",
+      disableCaching: false,
       ui: "tdd",
       specsGlob: "**/*.spec.js",
       chromeExecutablePath: findChromeExecutablePath() || ""
@@ -57,6 +58,14 @@ export class PuppeteesterConfigBuilder {
    */
   sources(sources) {
     this._config.sources = sources;
+    return this;
+  }
+
+  /**
+   * @param {boolean} disableCaching
+   */
+  disableCaching(disableCaching) {
+    this._config.disableCaching = disableCaching;
     return this;
   }
 

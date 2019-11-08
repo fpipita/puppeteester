@@ -45,6 +45,11 @@ const argv = yargs
       demandOption: true,
       desc: "Absolute path to your app's source code and specs."
     },
+    disableCaching: {
+      type: "boolean",
+      default: false,
+      desc: "If set to false, modules won't be cached."
+    },
     "node-modules": {
       type: "string",
       demandOption: true,
@@ -86,6 +91,7 @@ const argv = yargs
     })
     .nodeModules(path.resolve(argv["node-modules"]))
     .sources(path.resolve(argv.sources))
+    .disableCaching(argv.disableCaching)
     .specsGlob(argv["specs-glob"])
     .ui(/** @type {import("mocha").Interface} */ (argv.ui))
     .chromeExecutablePath(argv["chrome-executable-path"])
