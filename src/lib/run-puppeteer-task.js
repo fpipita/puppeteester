@@ -80,8 +80,12 @@ export class RunPuppeteerTask extends Task {
         }
         this.emit("console", { args });
       });
-      this._page.on("error", this.emit.bind(this, "console"));
-      this._page.on("pageerror", this.emit.bind(this, "console"));
+      this._page.on("error", error => {
+        this.emit("console", { args: [error] });
+      });
+      this._page.on("pageerror", error => {
+        this.emit("console", { args: [error] });
+      });
     }
     if (this._config.coverage) {
       await this._page.coverage.startJSCoverage();
