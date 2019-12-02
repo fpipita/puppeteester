@@ -149,7 +149,7 @@
 
 "@fpipita/esm-middleware@fpipita/esm-middleware":
   version "1.4.4"
-  resolved "https://codeload.github.com/fpipita/esm-middleware/tar.gz/b816fbc01732553aa93ba4fec3fe5cacf49c56c4"
+  resolved "https://codeload.github.com/fpipita/esm-middleware/tar.gz/8955cb152e8e98482ede5a0cd367675edfd8316c"
   dependencies:
     "@babel/core" "^7.7.0"
     "@babel/types" "^7.7.0"
