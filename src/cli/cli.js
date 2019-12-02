@@ -5,12 +5,21 @@ import { findChromeExecutablePath } from "../lib/utils.js";
 
 const argv = yargs
   .env("PUPPETEESTER")
-  .command("$0 <mode>", "starts puppeteester", yargs => {
-    yargs.positional("mode", {
-      desc: "define puppeteester's run mode",
-      type: "string",
-      choices: ["ci", "watch"]
-    });
+  .command("$0 <mode> [specs-glob]", "starts puppeteester", yargs => {
+    yargs
+      .positional("mode", {
+        desc: "define puppeteester's run mode",
+        type: "string",
+        choices: ["ci", "watch"]
+      })
+      .positional("specs-glob", {
+        type: "string",
+        default: "**/*.spec.js",
+        desc: [
+          "Glob pattern to filter your spec files. This will be",
+          "joined with the value provided in --sources."
+        ].join(" ")
+      });
   })
   .options({
     ui: {
@@ -31,14 +40,6 @@ const argv = yargs
       type: "number",
       default: 600,
       desc: "Sets Chrome viewport's height in pixels."
-    },
-    "specs-glob": {
-      type: "string",
-      default: "**/*.spec.js",
-      desc: [
-        "Glob pattern to filter your spec files. This will be",
-        "joined with the value provided in --sources."
-      ].join(" ")
     },
     sources: {
       type: "string",
@@ -92,7 +93,7 @@ const argv = yargs
     .nodeModules(path.resolve(argv["node-modules"]))
     .sources(path.resolve(argv.sources))
     .disableCaching(argv.disableCaching)
-    .specsGlob(argv["specs-glob"])
+    .specsGlob(/** @type {string} */ (argv["specs-glob"]))
     .ui(/** @type {import("mocha").Interface} */ (argv.ui))
     .chromeExecutablePath(argv["chrome-executable-path"])
     .chromeRemoteDebuggingAddress(argv["chrome-remote-debugging-address"])
