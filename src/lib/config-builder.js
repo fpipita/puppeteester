@@ -15,7 +15,8 @@ export class PuppeteesterConfigBuilder {
       disableCaching: false,
       ui: "tdd",
       specsGlob: "**/*.spec.js",
-      chromeExecutablePath: findChromeExecutablePath() || ""
+      chromeExecutablePath: findChromeExecutablePath() || "",
+      expressPort: null
     };
   }
 
@@ -85,8 +86,21 @@ export class PuppeteesterConfigBuilder {
     return this;
   }
 
+  /**
+   * @param {string | null} chromeExecutablePath
+   */
   chromeExecutablePath(chromeExecutablePath) {
-    this._config.chromeExecutablePath = chromeExecutablePath;
+    if (chromeExecutablePath) {
+      this._config.chromeExecutablePath = chromeExecutablePath;
+    }
+    return this;
+  }
+
+  /**
+   * @param {number | null} expressPort
+   */
+  expressPort(expressPort) {
+    this._config.expressPort = expressPort;
     return this;
   }
 

@@ -78,6 +78,11 @@ const argv = yargs
       type: "string",
       default: findChromeExecutablePath(),
       desc: "Absolute path to the Chrome executable."
+    },
+    "express-port": {
+      type: "number",
+      default: null,
+      desc: "The port the Express server will be listening on."
     }
   }).argv;
 
@@ -97,7 +102,8 @@ const argv = yargs
     .ui(/** @type {import("mocha").Interface} */ (argv.ui))
     .chromeExecutablePath(argv["chrome-executable-path"])
     .chromeRemoteDebuggingAddress(argv["chrome-remote-debugging-address"])
-    .chromeRemoteDebuggingPort(argv["chrome-remote-debugging-port"]);
+    .chromeRemoteDebuggingPort(argv["chrome-remote-debugging-port"])
+    .expressPort(argv["express-port"]);
   const puppeteester = new Puppeteester(configBuilder);
   puppeteester.on("console", event => {
     console.log(...event.args);

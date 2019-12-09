@@ -31,6 +31,8 @@ import { PuppeteesterConfigBuilder } from "./config-builder.js";
  * @property {string} chromeRemoteDebuggingAddress
  * @property {string} chromeExecutablePath absolute path to the Chrome
  * executable.
+ * @property {number | null} expressPort port the Express server will be
+ * listening on.
  */
 
 /**
@@ -209,7 +211,7 @@ export class Puppeteester extends EventEmitter {
   _start() {
     return new Promise(resolve => {
       const app = createApp(this._config);
-      const server = app.listen(() => {
+      const server = app.listen(this._config.expressPort, () => {
         const address = /** @type {import("net").AddressInfo} */ (server.address());
         const task = new RunPuppeteerTask(
           `http://localhost:${address.port}`,
