@@ -14,7 +14,7 @@ export class PuppeteesterConfigBuilder {
       sources: "",
       disableCaching: false,
       ui: "tdd",
-      specsGlob: "**/*.spec.js",
+      specsGlob: "**/*.test.js",
       chromeExecutablePath: findChromeExecutablePath() || "",
       expressPort: null
     };

@@ -14,7 +14,7 @@ const argv = yargs
       })
       .positional("specs-glob", {
         type: "string",
-        default: "**/*.spec.js",
+        default: "**/*.test.js",
         desc: [
           "Glob pattern to filter your spec files. This will be",
           "joined with the value provided in --sources."
