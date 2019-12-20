@@ -63,13 +63,15 @@ const serveTests = config => (req, res) => {
             window.process = ${JSON.stringify({ env: { NODE_ENV: "test" } })};
           </script>
           <script type="module" src="/puppeteester/setup.js"></script>
-          ${files.map(
-            file =>
-              `<script type="module" src="${file.replace(
-                config.sources,
-                ""
-              )}"></script>`
-          )}
+          ${files
+            .map(
+              file =>
+                `<script type="module" src="${file.replace(
+                  config.sources,
+                  ""
+                )}"></script>`
+            )
+            .join("\n")}
           <script type="module">
             // the __done__ callback is exposed by the RunPuppeteerTask's
             // run() method
