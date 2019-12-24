@@ -112,6 +112,7 @@ function createApp(config) {
       disableCaching: config.disableCaching
     })
   );
+  app.use(express.static(config.sources));
 
   // main endpoint
   app.get("*", serveTests(config));
