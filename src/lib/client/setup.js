@@ -1,4 +1,4 @@
-import "/puppeteester/vendor/mocha.js?nomodule=true";
+import "/node_modules/mocha/mocha.js?nomodule=true";
 import { headless, ui } from "./config.js";
 
 mocha.setup({

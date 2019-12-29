@@ -53,7 +53,7 @@ const serveTests = config => (req, res) => {
             content="width=device-width, initial-scale=1.0"
           />
           <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-          <link rel="stylesheet" href="/puppeteester/vendor/mocha.css" />
+          <link rel="stylesheet" href="/node_modules/mocha/mocha.css" />
           <title>Puppeteester</title>
           <script type="module">
             window.__puppeteester__ = ${JSON.stringify({
@@ -112,7 +112,8 @@ function createApp(config) {
       disableCaching: config.disableCaching
     })
   );
-  app.use(express.static(config.sources));
+  app.use("/", express.static(config.sources));
+  app.use("/node_modules", express.static(config.nodeModules));
 
   // main endpoint
   app.get("*", serveTests(config));

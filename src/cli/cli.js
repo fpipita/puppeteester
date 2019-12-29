@@ -17,7 +17,9 @@ const argv = yargs
         default: "**/*.test.js",
         desc: [
           "Glob pattern to filter your spec files. This will be",
-          "joined with the value provided in --sources."
+          "joined with the value provided in --sources. Make sure the",
+          "pattern is enclosed within quotes to prevent the shell from",
+          "expanding special chars (e.g. *)."
         ].join(" ")
       });
   })
@@ -46,7 +48,7 @@ const argv = yargs
       demandOption: true,
       desc: "Absolute path to your app's source code and specs."
     },
-    disableCaching: {
+    "disable-caching": {
       type: "boolean",
       default: false,
       desc: "If set to false, modules won't be cached."
@@ -97,7 +99,7 @@ const argv = yargs
     })
     .nodeModules(path.resolve(argv["node-modules"]))
     .sources(path.resolve(argv.sources))
-    .disableCaching(argv.disableCaching)
+    .disableCaching(argv["disable-caching"])
     .specsGlob(/** @type {string} */ (argv["specs-glob"]))
     .ui(/** @type {import("mocha").Interface} */ (argv.ui))
     .chromeExecutablePath(argv["chrome-executable-path"])

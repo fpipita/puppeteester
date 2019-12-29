@@ -4,13 +4,13 @@ This example shows how you would use this package to quickly test a real world a
 
 ## System requirements
 
-In order to run this example, you'll need `Chrome` installed and `Node` version `13` or above.
+In order to run this example, you'll need `Chrome` installed and `Node` version `13.5.0` or above.
 
 ## Running the example
 
 Open a terminal, point it to the `example` folder and run `yarn && yarn test`.
 
-The test runner will load the specs from any `.spec.js` files located under the `src/` folder, run them and report the results in the terminal.
+The test runner will load the specs from any `.test.js` files located under the `src/` folder, run them and report the results in the terminal.
 
 ## Debugging your tests
 

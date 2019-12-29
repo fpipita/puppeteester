@@ -6,7 +6,8 @@
   "author": "Francesco Pipita <francesco.pipita@gmail.com>",
   "license": "GPL-3.0",
   "devDependencies": {
-    "chai": "^4.2.0"
+    "chai": "^4.2.0",
+    "mocha": "^6.2.2"
   },
   "dependencies": {
     "lodash-es": "^4.17.15"
