@@ -8,7 +8,7 @@
   "author": "Francesco Pipita <francesco.pipita@gmail.com>",
   "license": "GPL-3.0",
   "dependencies": {
-    "@fpipita/esm-middleware": "^1.5.0",
+    "@fpipita/esm-middleware": "^1.6.0",
     "chokidar": "^3.3.1",
     "express": "^4.17.1",
     "fs-extra": "^8.1.0",
@@ -18,10 +18,10 @@
     "puppeteer-core": "^2.0.0",
     "puppeteer-to-istanbul": "^1.2.2",
     "which": "^2.0.1",
-    "yargs": "^15.0.2"
+    "yargs": "^15.1.0"
   },
   "peerDependencies": {
-    "mocha": "^6"
+    "mocha": ">=6 <7"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",
@@ -32,16 +32,16 @@
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-prettier": "^3.1.2",
     "esm": "^3.2.25",
-    "husky": ">=1",
-    "lint-staged": "^9.5.0",
+    "husky": ">=4.2.0",
+    "lint-staged": "^10.0.2",
     "prettier": "^1.18.2"
   },
   "scripts": {
     "test": "mocha --ui tdd --require esm --timeout 0 test/**/*.test.js",
     "commit": "git-cz",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "preversion": "yarn test && yarn eslint .",
-    "version": "yarn changelog",
+    "version": "yarn changelog && git add -A",
     "postversion": "git push && git push --tags"
   },
   "config": {
@@ -80,12 +80,10 @@
   },
   "lint-staged": {
     "*.js": [
-      "eslint --fix",
-      "git add"
+      "eslint --fix"
     ],
     "*.json": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ]
   }
 }

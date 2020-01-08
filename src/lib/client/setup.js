@@ -4,7 +4,7 @@ import { headless, ui } from "./config.js";
 mocha.setup({
   enableTimeouts: false,
   ui,
-  useColors: true,
+  color: true,
   reporter: headless ? "spec" : undefined,
-  ignoreLeaks: true
+  checkLeaks: false
 });
