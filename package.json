@@ -31,13 +31,13 @@
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-prettier": "^3.1.2",
-    "esm": "^3.2.25",
     "husky": ">=4.2.0",
     "lint-staged": "^10.0.2",
+    "mocha": "7.0.0-esm1",
     "prettier": "^1.18.2"
   },
   "scripts": {
-    "test": "mocha --ui tdd --require esm --timeout 0 test/**/*.test.js",
+    "test": "mocha --ui tdd --timeout 0 test/**/*.test.js",
     "commit": "git-cz",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "preversion": "yarn test && yarn eslint .",
@@ -82,7 +82,7 @@
     "*.js": [
       "eslint --fix"
     ],
-    "*.json": [
+    "*.{json,html,yml,md}": [
       "prettier --write"
     ]
   }
