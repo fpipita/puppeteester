@@ -1,13 +1,11 @@
 import assert from "assert";
 import { EventEmitter } from "events";
 import { fileURLToPath } from "url";
-import { URL } from "url";
 import express from "express";
 import glob from "glob";
 import chokidar from "chokidar";
 import esm from "@fpipita/esm-middleware";
 import path from "path";
-import minimatch from "minimatch";
 import { Scheduler } from "./scheduler.js";
 import { DefaultTimer } from "./timer.js";
 import { RunPuppeteerTask } from "./run-puppeteer-task.js";
@@ -15,24 +13,19 @@ import { PuppeteesterConfigBuilder } from "./config-builder.js";
 
 /**
  * @typedef {Object} PuppeteesterConfig puppeteester configuration object.
- * @property {string} sources absolute path to your app's source code and
- * specs folder.
- * @property {string} nodeModules absolute path to your app's `node_modules`
- * folder.
- * @property {string} specsGlob optional, glob pattern to filter your spec
- * files. This will be joined with the value provided in `sources`.
- * @property {import("mocha").Interface} ui sets the Mocha's interface that
- * will be made available to your test files.
- * @property {boolean} disableCaching if true, modules won't be cached.
- * @property {string | null} coverage if set, it has to be an absolute path
- * where puppeteester will output a code coverage report of your source code.
- * @property {import("puppeteer-core").BrowserOptions} browserOptions
- * @property {number} chromeRemoteDebuggingPort
- * @property {string} chromeRemoteDebuggingAddress
- * @property {string} chromeExecutablePath absolute path to the Chrome
- * executable.
- * @property {number | null} expressPort port the Express server will be
- * listening on.
+ * @property {string} [sources]
+ * @property {string} [nodeModules]
+ * @property {string} [specsGlob]
+ * @property {import("mocha").Interface} [ui]
+ * @property {boolean} [disableCaching]
+ * @property {boolean} [coverage]
+ * @property {string} [coverageOutput]
+ * @property {string[]} [coverageReporter]
+ * @property {import("puppeteer-core").BrowserOptions} [browserOptions]
+ * @property {number} [chromeRemoteDebuggingPort]
+ * @property {string} [chromeRemoteDebuggingAddress]
+ * @property {string} [chromeExecutablePath]
+ * @property {number | null} [expressPort]
  */
 
 /**
@@ -102,7 +95,7 @@ function createApp(config) {
 
   // also make it easy to inspect the html coverage report
   if (config.coverage) {
-    app.use("/coverage", express.static(config.coverage));
+    app.use("/coverage", express.static(config.coverageOutput));
   }
 
   // handles source code and specs
@@ -131,41 +124,6 @@ class PuppeteesterApplication {
   }
 }
 
-class PuppeteesterReport {
-  /**
-   * @param {import("./run-puppeteer-task.js").RunPuppetesterTaskOutput} result
-   * @param {PuppeteesterConfig} config
-   */
-  constructor(result, config) {
-    /** @type {number} */
-    this.failures = result.failures;
-    /** @type {import("puppeteer-core").CoverageEntry[]} */
-    this.coverage = (result.coverage || []).filter(entry => {
-      const { pathname } = new URL(entry.url);
-      if (minimatch(pathname, config.specsGlob)) {
-        // esclude spec files
-        return false;
-      }
-      if (pathname === "/") {
-        // exclude anonymous script tags
-        return false;
-      }
-      if (pathname.startsWith("/puppeteester")) {
-        // exclude puppeteester client side code
-        return false;
-      }
-      if (pathname.startsWith("/node_modules")) {
-        /**
-         * exclude client side node_modules code, esm-middleware will
-         * mount it on /node_modules by default
-         */
-        return false;
-      }
-      return true;
-    });
-  }
-}
-
 class PuppeteesterWatcher extends EventEmitter {
   /**
    * @param {PuppeteesterApplication} app
@@ -178,7 +136,7 @@ class PuppeteesterWatcher extends EventEmitter {
     this._scheduler.on("taskcomplete", (
       /** @type {import("./run-puppeteer-task").RunPuppetesterTaskOutput} */ event
     ) => {
-      this.emit("taskcomplete", new PuppeteesterReport(event, config));
+      this.emit("taskcomplete", event);
     });
     this._scheduler.start();
     this._watcher = chokidar.watch(config.sources);
@@ -227,14 +185,13 @@ export class Puppeteester extends EventEmitter {
   }
 
   /**
-   * @returns {Promise<PuppeteesterReport>}
+   * @returns {Promise<import("./run-puppeteer-task").RunPuppetesterTaskOutput>}
    */
   async ci() {
     const app = await this._start();
     app.task.on("console", this.emit.bind(this, "console"));
     try {
-      const result = await app.task.run();
-      return new PuppeteesterReport(result, this._config);
+      return await app.task.run();
     } finally {
       app.server.close();
       await app.task.cancel();

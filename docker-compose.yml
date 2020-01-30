@@ -8,5 +8,6 @@ services:
     volumes:
       - "${PWD}:/home/node/puppeteester"
     ports:
-      - "9223:9222"
-      - "9230:9229"
+      - "${CHROME_REMOTE_DEBUGGING_PORT:-9222}:9222"
+      - "${NODE_REMOTE_DEBUGGING_PORT:-9229}:9229"
+      - "${EXPRESS_PORT:-3000}:3000"

@@ -1,30 +1,33 @@
 import assert from "assert";
 import path from "path";
-import { findChromeExecutablePath } from "./utils.js";
 
 export class PuppeteesterConfigBuilder {
   constructor() {
     /** @type {import("./puppeteester").PuppeteesterConfig} */
-    this._config = {
-      coverage: null,
-      browserOptions: {},
-      chromeRemoteDebuggingAddress: "0.0.0.0",
-      chromeRemoteDebuggingPort: 9222,
-      nodeModules: "",
-      sources: "",
-      disableCaching: false,
-      ui: "tdd",
-      specsGlob: "**/*.test.js",
-      chromeExecutablePath: findChromeExecutablePath() || "",
-      expressPort: null
-    };
+    this._config = {};
   }
 
   /**
-   * @param {string | null} coverage
+   * @param {boolean} coverage
    */
   coverage(coverage) {
     this._config.coverage = coverage;
+    return this;
+  }
+
+  /**
+   * @param {string} coverageOutput
+   */
+  coverageOutput(coverageOutput) {
+    this._config.coverageOutput = coverageOutput;
+    return this;
+  }
+
+  /**
+   * @param {string[]} coverageReporter
+   */
+  coverageReporter(coverageReporter) {
+    this._config.coverageReporter = coverageReporter;
     return this;
   }
 

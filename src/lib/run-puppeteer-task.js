@@ -1,4 +1,9 @@
 import puppeteer from "puppeteer-core";
+import pti from "puppeteer-to-istanbul";
+import NYC from "nyc";
+import fs from "fs";
+import path from "path";
+import minimatch from "minimatch";
 import { Task } from "./task.js";
 import { Deferred } from "./deferred.js";
 
@@ -15,8 +20,7 @@ export class RunPuppetesterTaskOutput {
 
 export class RunPuppeteerTask extends Task {
   /**
-   *
-   * @param {!string} testPageUrl
+   * @param {string} testPageUrl
    * @param {import("./puppeteester.js").PuppeteesterConfig} config
    */
   constructor(testPageUrl, config) {
@@ -39,6 +43,35 @@ export class RunPuppeteerTask extends Task {
    */
   _done(failures) {
     this._running.resolve(failures);
+  }
+
+  /**
+   * @param {puppeteer.CoverageEntry[]} entries
+   */
+  _filterCoverageEntries(entries) {
+    return entries.filter(entry => {
+      const { pathname } = new URL(entry.url);
+      if (minimatch(pathname, this._config.specsGlob)) {
+        // esclude spec files
+        return false;
+      }
+      if (pathname === "/") {
+        // exclude anonymous script tags
+        return false;
+      }
+      if (pathname.startsWith("/puppeteester")) {
+        // exclude puppeteester client side code
+        return false;
+      }
+      if (pathname.startsWith("/node_modules")) {
+        /**
+         * exclude client side node_modules code, esm-middleware will
+         * mount it on /node_modules by default
+         */
+        return false;
+      }
+      return true;
+    });
   }
 
   /**
@@ -94,7 +127,19 @@ export class RunPuppeteerTask extends Task {
     await this._page.goto(this._testPageUrl);
     const failures = await this._running.promise;
     if (this._config.coverage) {
-      coverage = await this._page.coverage.stopJSCoverage();
+      coverage = this._filterCoverageEntries(
+        await this._page.coverage.stopJSCoverage()
+      );
+      fs.rmdirSync(path.resolve(".nyc_output"), { recursive: true });
+      fs.rmdirSync(path.resolve(this._config.coverageOutput), {
+        recursive: true
+      });
+      pti.write(coverage);
+      const nyc = new NYC({
+        reportDir: this._config.coverageOutput,
+        reporter: this._config.coverageReporter
+      });
+      await nyc.report();
     }
     return new RunPuppetesterTaskOutput(failures, coverage);
   }

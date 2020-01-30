@@ -9,4 +9,8 @@ suite("sum specs", () => {
   test("failing spec", () => {
     chai.assert.equal(sum(1, 2), 4);
   });
+
+  test("no arguments", () => {
+    chai.assert.throws(() => sum());
+  });
 });

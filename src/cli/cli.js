@@ -15,12 +15,8 @@ const argv = yargs
       .positional("specs-glob", {
         type: "string",
         default: "**/*.test.js",
-        desc: [
-          "Glob pattern to filter your spec files. This will be",
-          "joined with the value provided in --sources. Make sure the",
-          "pattern is enclosed within quotes to prevent the shell from",
-          "expanding special chars (e.g. *)."
-        ].join(" ")
+        desc:
+          "Glob pattern to filter the spec files. This will be joined with the value provided in --sources. Make sure the pattern is enclosed within quotes to prevent the shell from expanding special chars (e.g. *)."
       });
   })
   .options({
@@ -28,43 +24,47 @@ const argv = yargs
       choices: ["bdd", "tdd", "qunit"],
       type: "string",
       default: "tdd",
-      desc: [
-        "Sets the Mocha's interface that will be made available ",
-        "to your test files."
-      ].join(" ")
+      desc: "Mocha interface to be exposed to test files."
     },
     width: {
       type: "number",
       default: 800,
-      desc: "Sets Chrome viewport's width in pixels."
+      desc: "Chrome viewport's width in pixels."
     },
     height: {
       type: "number",
       default: 600,
-      desc: "Sets Chrome viewport's height in pixels."
+      desc: "Chrome viewport's height in pixels."
     },
     sources: {
       type: "string",
       demandOption: true,
-      desc: "Absolute path to your app's source code and specs."
+      desc: "Path to the project's source code."
     },
     "disable-caching": {
       type: "boolean",
       default: false,
-      desc: "If set to false, modules won't be cached."
+      desc: "Enables or disables esm-middleware module caching."
     },
     "node-modules": {
       type: "string",
       demandOption: true,
-      desc: "Absolute path to your app's node_modules folder."
+      desc: "Path to the project's node_modules folder."
     },
     coverage: {
+      type: "boolean",
+      default: false,
+      desc: "Enables or disables code coverage report generation."
+    },
+    "coverage-output": {
       type: "string",
-      default: null,
-      desc: [
-        "If set, it has to be an absolute path where puppeteester will",
-        "output a code coverage report of your source code"
-      ].join(" ")
+      default: path.resolve("coverage"),
+      desc: "Code coverage output directory."
+    },
+    "coverage-reporter": {
+      type: "string",
+      default: ["text"],
+      desc: "A valid Istanbul reporter name. Can be repeated multiple times."
     },
     "chrome-remote-debugging-address": {
       type: "string",
@@ -91,6 +91,8 @@ const argv = yargs
 (async function() {
   const configBuilder = new PuppeteesterConfigBuilder()
     .coverage(argv.coverage)
+    .coverageOutput(argv["coverage-output"])
+    .coverageReporter(argv["coverage-reporter"])
     .browserOptions({
       defaultViewport: {
         height: argv.height,
@@ -114,9 +116,6 @@ const argv = yargs
     const result = await puppeteester.ci();
     process.exit(result.failures > 0 ? 1 : 0);
   } else {
-    const watcher = await puppeteester.watch();
-    watcher.on("taskcomplete", event => {
-      console.log(event);
-    });
+    puppeteester.watch();
   }
 })();
