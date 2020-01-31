@@ -1,15 +1,19 @@
 import assert from "assert";
 import path from "path";
 import { Puppeteester } from "../../src/lib/puppeteester.js";
-import { PuppeteesterConfigBuilder } from "../../src/lib/config-builder.js";
+import { parse } from "../../src/lib/configuration.js";
 
 suite("Puppeteester class", () => {
   suite("ci mode", () => {
     test("test failures", async () => {
       const puppeteester = new Puppeteester(
-        new PuppeteesterConfigBuilder()
-          .nodeModules(path.resolve("example", "node_modules"))
-          .sources(path.resolve("example", "src"))
+        parse([
+          "--node-modules",
+          path.resolve("example", "node_modules"),
+          "--sources",
+          path.resolve("example", "src"),
+          "ci"
+        ])
       );
       const result = await puppeteester.ci();
       assert.equal(1, result.failures);
@@ -17,10 +21,16 @@ suite("Puppeteester class", () => {
 
     test("coverage report of source code only", async () => {
       const puppeteester = new Puppeteester(
-        new PuppeteesterConfigBuilder()
-          .nodeModules(path.resolve("example", "node_modules"))
-          .sources(path.resolve("example", "src"))
-          .coverage("/tmp")
+        parse([
+          "--node-modules",
+          path.resolve("example", "node_modules"),
+          "--sources",
+          path.resolve("example", "src"),
+          "--coverage",
+          "--coverage-output",
+          "/tmp",
+          "ci"
+        ])
       );
       const result = await puppeteester.ci();
       assert.equal(1, result.coverage.length);
@@ -29,10 +39,15 @@ suite("Puppeteester class", () => {
 
     test("puppeteer thrown exceptions propagation", async () => {
       const puppeteester = new Puppeteester(
-        new PuppeteesterConfigBuilder()
-          .nodeModules(path.resolve("example", "node_modules"))
-          .sources(path.resolve("example", "src"))
-          .chromeExecutablePath("/foo")
+        parse([
+          "--node-modules",
+          path.resolve("example", "node_modules"),
+          "--sources",
+          path.resolve("example", "src"),
+          "--chrome-executable-path",
+          "/foo",
+          "ci"
+        ])
       );
       try {
         await puppeteester.ci();

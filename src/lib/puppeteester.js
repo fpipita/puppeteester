@@ -1,4 +1,3 @@
-import assert from "assert";
 import { EventEmitter } from "events";
 import { fileURLToPath } from "url";
 import express from "express";
@@ -9,23 +8,23 @@ import path from "path";
 import { Scheduler } from "./scheduler.js";
 import { DefaultTimer } from "./timer.js";
 import { RunPuppeteerTask } from "./run-puppeteer-task.js";
-import { PuppeteesterConfigBuilder } from "./config-builder.js";
 
 /**
  * @typedef {Object} PuppeteesterConfig puppeteester configuration object.
- * @property {string} [sources]
- * @property {string} [nodeModules]
- * @property {string} [specsGlob]
- * @property {import("mocha").Interface} [ui]
- * @property {boolean} [disableCaching]
- * @property {boolean} [coverage]
- * @property {string} [coverageOutput]
- * @property {string[]} [coverageReporter]
- * @property {import("puppeteer-core").BrowserOptions} [browserOptions]
- * @property {number} [chromeRemoteDebuggingPort]
- * @property {string} [chromeRemoteDebuggingAddress]
- * @property {string} [chromeExecutablePath]
- * @property {number | null} [expressPort]
+ * @property {string} sources
+ * @property {string} node-modules
+ * @property {string} specs-glob
+ * @property {"tdd" | "bdd" | "qunit"} ui
+ * @property {boolean} disable-caching
+ * @property {boolean} coverage
+ * @property {string} coverage-output
+ * @property {string[]} coverage-reporter
+ * @property {number} width
+ * @property {number} height
+ * @property {number} chrome-remote-debugging-port
+ * @property {string} chrome-remote-debugging-address
+ * @property {string} chrome-executable-path
+ * @property {number | null} express-port
  */
 
 /**
@@ -35,7 +34,7 @@ import { PuppeteesterConfigBuilder } from "./config-builder.js";
 const serveTests = config => (req, res) => {
   const useragent = req.headers["user-agent"];
   const headless = !useragent || /headless/i.test(useragent);
-  glob(path.join(config.sources, config.specsGlob), (er, files) => {
+  glob(path.join(config.sources, config["specs-glob"]), (er, files) => {
     res.send(/* HTML */ `
       <!DOCTYPE html>
       <html lang="en">
@@ -95,18 +94,18 @@ function createApp(config) {
 
   // also make it easy to inspect the html coverage report
   if (config.coverage) {
-    app.use("/coverage", express.static(config.coverageOutput));
+    app.use("/coverage", express.static(config["coverage-output"]));
   }
 
   // handles source code and specs
   app.use(
     esm(config.sources, {
-      nodeModulesRoot: config.nodeModules,
-      disableCaching: config.disableCaching
+      nodeModulesRoot: config["node-modules"],
+      disableCaching: config["disable-caching"]
     })
   );
   app.use("/", express.static(config.sources));
-  app.use("/node_modules", express.static(config.nodeModules));
+  app.use("/node_modules", express.static(config["node-modules"]));
 
   // main endpoint
   app.get("*", serveTests(config));
@@ -156,15 +155,11 @@ class PuppeteesterWatcher extends EventEmitter {
 
 export class Puppeteester extends EventEmitter {
   /**
-   * @param {PuppeteesterConfigBuilder} configBuilder
+   * @param {PuppeteesterConfig} config
    */
-  constructor(configBuilder) {
+  constructor(config) {
     super();
-    assert.ok(
-      configBuilder instanceof PuppeteesterConfigBuilder,
-      "configBuilder: expected PuppeteesterConfigBuilder instance"
-    );
-    this._config = configBuilder.build();
+    this._config = config;
   }
 
   /**
@@ -173,7 +168,7 @@ export class Puppeteester extends EventEmitter {
   _start() {
     return new Promise(resolve => {
       const app = createApp(this._config);
-      const server = app.listen(this._config.expressPort, () => {
+      const server = app.listen(this._config["express-port"], () => {
         const address = /** @type {import("net").AddressInfo} */ (server.address());
         const task = new RunPuppeteerTask(
           `http://localhost:${address.port}`,

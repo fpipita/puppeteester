@@ -13,5 +13,5 @@ before_install:
 
 script:
   - docker-compose up -d
-  - docker-compose exec --user `id -u` dev-container sh -c "yarn install && yarn --cwd example/ install"
-  - docker-compose exec --user `id -u` dev-container yarn test
+  - docker-compose exec --user root dev-container sh -c "yarn install && yarn --cwd example/ install"
+  - docker-compose exec --user root dev-container yarn test

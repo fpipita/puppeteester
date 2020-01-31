@@ -4,7 +4,7 @@ This example shows how you would use this package to quickly test a real world a
 
 ## System requirements
 
-In order to run this example, you'll need `Chrome` installed and `Node` version `13.5.0` or above.
+In order to run this example, you'll need `Chrome` installed and `Node` version `13.7.0` or above.
 
 ## Running the example
 
@@ -14,6 +14,6 @@ The test runner will load the specs from any `.test.js` files located under the 
 
 ## Debugging your tests
 
-1. Run `yarn debug`, then open Chrome and visit the `chrome://inspect` url;
+1. Run `yarn watch`, then open Chrome and visit the `chrome://inspect` url;
 2. Add the host `127.0.0.1:9222` to the target discovery servers list;
 3. Inspect the `Puppeteester` target to debug your source code and specs;

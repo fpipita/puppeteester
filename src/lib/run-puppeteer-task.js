@@ -51,7 +51,7 @@ export class RunPuppeteerTask extends Task {
   _filterCoverageEntries(entries) {
     return entries.filter(entry => {
       const { pathname } = new URL(entry.url);
-      if (minimatch(pathname, this._config.specsGlob)) {
+      if (minimatch(pathname, this._config["specs-glob"])) {
         // esclude spec files
         return false;
       }
@@ -81,14 +81,17 @@ export class RunPuppeteerTask extends Task {
     this._running = new Deferred();
     if (this._browser === null || !this._browser.isConnected()) {
       this._browser = await puppeteer.launch({
-        ...this._config.browserOptions,
-        executablePath: this._config.chromeExecutablePath,
+        defaultViewport: {
+          height: this._config.height,
+          width: this._config.width
+        },
+        executablePath: this._config["chrome-executable-path"],
         args: [
           "--no-sandbox",
           "--disable-setuid-sandbox",
           "--disable-dev-shm-usage",
-          `--remote-debugging-port=${this._config.chromeRemoteDebuggingPort}`,
-          `--remote-debugging-address=${this._config.chromeRemoteDebuggingAddress}`
+          `--remote-debugging-port=${this._config["chrome-remote-debugging-port"]}`,
+          `--remote-debugging-address=${this._config["chrome-remote-debugging-address"]}`
         ]
       });
     }
@@ -131,13 +134,13 @@ export class RunPuppeteerTask extends Task {
         await this._page.coverage.stopJSCoverage()
       );
       fs.rmdirSync(path.resolve(".nyc_output"), { recursive: true });
-      fs.rmdirSync(path.resolve(this._config.coverageOutput), {
+      fs.rmdirSync(path.resolve(this._config["coverage-output"]), {
         recursive: true
       });
       pti.write(coverage);
       const nyc = new NYC({
-        reportDir: this._config.coverageOutput,
-        reporter: this._config.coverageReporter
+        reportDir: this._config["coverage-output"],
+        reporter: this._config["coverage-reporter"]
       });
       await nyc.report();
     }
