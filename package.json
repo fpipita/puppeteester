@@ -16,7 +16,7 @@
     "minimatch": "^3.0.4",
     "nyc": "^15.0.0",
     "puppeteer-core": "^2.0.0",
-    "puppeteer-to-istanbul": "^1.2.2",
+    "puppeteer-to-istanbul": "istanbuljs/puppeteer-to-istanbul",
     "which": "^2.0.1",
     "yargs": "^15.1.0"
   },

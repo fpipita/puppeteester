@@ -3781,10 +3781,9 @@ puppeteer-core@^2.0.0:
     rimraf "^2.6.1"
     ws "^6.1.0"
 
-puppeteer-to-istanbul@^1.2.2:
+puppeteer-to-istanbul@istanbuljs/puppeteer-to-istanbul:
   version "1.2.2"
-  resolved "https://registry.yarnpkg.com/puppeteer-to-istanbul/-/puppeteer-to-istanbul-1.2.2.tgz#e25d89b2ebe772ca731d8306b9a04e9c0a006bfa"
-  integrity sha512-uXj2WKvcrszD0BHBp6Ht3FDed4Kfzvzn1fP4IdrYLjZ9Gbxc/YRhT1JBdTz1TMHZVs+HHT/Bbwz3KwSLLK4UBg==
+  resolved "https://codeload.github.com/istanbuljs/puppeteer-to-istanbul/tar.gz/de9109c794523eb8924ef24770503908650cc952"
   dependencies:
     clone "^2.1.1"
     mkdirp "^0.5.1"

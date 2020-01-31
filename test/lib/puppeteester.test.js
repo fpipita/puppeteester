@@ -33,11 +33,11 @@ suite("Puppeteester class", () => {
         ])
       );
       const result = await puppeteester.ci();
-      assert.equal(1, result.coverage.length);
+      assert.equal(2, result.coverage.length);
       assert.ok(result.coverage[0].url.endsWith("sum.js"));
     });
 
-    test("puppeteer thrown exceptions propagation", async () => {
+    test("exception propagation", async () => {
       const puppeteester = new Puppeteester(
         parse([
           "--node-modules",
