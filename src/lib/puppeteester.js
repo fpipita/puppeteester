@@ -19,8 +19,8 @@ import { RunPuppeteerTask } from "./run-puppeteer-task.js";
  * @property {boolean} coverage
  * @property {string} coverage-output
  * @property {string[]} coverage-reporter
- * @property {number} width
- * @property {number} height
+ * @property {number} chrome-default-viewport-width
+ * @property {number} chrome-default-viewport-height
  * @property {number} chrome-remote-debugging-port
  * @property {string} chrome-remote-debugging-address
  * @property {string} chrome-executable-path

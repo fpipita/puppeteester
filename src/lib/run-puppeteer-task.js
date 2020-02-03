@@ -82,8 +82,8 @@ export class RunPuppeteerTask extends Task {
     if (this._browser === null || !this._browser.isConnected()) {
       this._browser = await puppeteer.launch({
         defaultViewport: {
-          height: this._config.height,
-          width: this._config.width
+          height: this._config["chrome-default-viewport-height"],
+          width: this._config["chrome-default-viewport-width"]
         },
         executablePath: this._config["chrome-executable-path"],
         args: [

@@ -24,16 +24,6 @@ export const parse = yargs
     default: "tdd",
     desc: "Mocha interface to be exposed to test files."
   })
-  .option("width", {
-    type: "number",
-    default: 800,
-    desc: "Chrome viewport's width in pixels."
-  })
-  .option("height", {
-    type: "number",
-    default: 600,
-    desc: "Chrome viewport's height in pixels."
-  })
   .option("sources", {
     type: "string",
     demandOption: true,
@@ -66,6 +56,16 @@ export const parse = yargs
     type: "string",
     default: ["text"],
     desc: "A valid Istanbul reporter name. Can be repeated multiple times."
+  })
+  .option("chrome-default-viewport-width", {
+    type: "number",
+    default: 800,
+    desc: "Chrome viewport's width in pixels."
+  })
+  .option("chrome-default-viewport-height", {
+    type: "number",
+    default: 600,
+    desc: "Chrome viewport's height in pixels."
   })
   .option("chrome-remote-debugging-address", {
     type: "string",
