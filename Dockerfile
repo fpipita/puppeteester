@@ -1,4 +1,4 @@
-FROM node:13.7.0-buster
+FROM node:13.10.1-buster
 RUN apt-get update \
   && apt-get install -y bash-completion vim less \
   && curl -fsSL https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \

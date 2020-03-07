@@ -4,7 +4,9 @@
   "version": "0.0.1",
   "description": "Run client side tests within a headless Chrome instance.",
   "main": "lib/index.js",
-  "bin": "bin/puppeteester",
+  "bin": {
+    "puppeteester": "src/cli/cli.js"
+  },
   "author": "Francesco Pipita <francesco.pipita@gmail.com>",
   "license": "GPL-3.0",
   "dependencies": {

@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { parse } from "../lib/configuration.js";
 import { Puppeteester } from "../lib/puppeteester.js";
 
