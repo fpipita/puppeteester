@@ -49,7 +49,7 @@ export class RunPuppeteerTask extends Task {
    * @param {puppeteer.CoverageEntry[]} entries
    */
   _filterCoverageEntries(entries) {
-    return entries.filter(entry => {
+    return entries.filter((entry) => {
       const { pathname } = new URL(entry.url);
       if (minimatch(pathname, this._config["specs-glob"])) {
         // esclude spec files
@@ -83,7 +83,7 @@ export class RunPuppeteerTask extends Task {
       this._browser = await puppeteer.launch({
         defaultViewport: {
           height: this._config["chrome-default-viewport-height"],
-          width: this._config["chrome-default-viewport-width"]
+          width: this._config["chrome-default-viewport-width"],
         },
         executablePath: this._config["chrome-executable-path"],
         args: [
@@ -91,8 +91,8 @@ export class RunPuppeteerTask extends Task {
           "--disable-setuid-sandbox",
           "--disable-dev-shm-usage",
           `--remote-debugging-port=${this._config["chrome-remote-debugging-port"]}`,
-          `--remote-debugging-address=${this._config["chrome-remote-debugging-address"]}`
-        ]
+          `--remote-debugging-address=${this._config["chrome-remote-debugging-address"]}`,
+        ],
       });
     }
     if (this._page === null || this._page.isClosed()) {
@@ -109,17 +109,17 @@ export class RunPuppeteerTask extends Task {
        * run() return and in turn allows the scheduler to resume.
        */
       this._page.exposeFunction("__done__", this._done);
-      this._page.on("console", async msg => {
+      this._page.on("console", async (msg) => {
         const args = [];
         for (let x of msg.args()) {
           args.push(await x.jsonValue());
         }
         this.emit("console", { args });
       });
-      this._page.on("error", error => {
+      this._page.on("error", (error) => {
         this.emit("console", { args: [error] });
       });
-      this._page.on("pageerror", error => {
+      this._page.on("pageerror", (error) => {
         this.emit("console", { args: [error] });
       });
     }
@@ -135,12 +135,12 @@ export class RunPuppeteerTask extends Task {
       );
       fs.rmdirSync(path.resolve(".nyc_output"), { recursive: true });
       fs.rmdirSync(path.resolve(this._config["coverage-output"]), {
-        recursive: true
+        recursive: true,
       });
       pti.write(coverage);
       const nyc = new NYC({
         reportDir: this._config["coverage-output"],
-        reporter: this._config["coverage-reporter"]
+        reporter: this._config["coverage-reporter"],
       });
       await nyc.report();
     }

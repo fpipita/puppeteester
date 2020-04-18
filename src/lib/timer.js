@@ -16,7 +16,7 @@ export class DefaultTimer extends Timer {
    * @param {!number} milliseconds
    */
   wait(milliseconds) {
-    return new Promise(resolve => setTimeout(resolve, milliseconds));
+    return new Promise((resolve) => setTimeout(resolve, milliseconds));
   }
 }
 

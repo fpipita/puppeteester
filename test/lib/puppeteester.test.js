@@ -12,7 +12,7 @@ suite("Puppeteester class", () => {
           path.resolve("example", "node_modules"),
           "--sources",
           path.resolve("example", "src"),
-          "ci"
+          "ci",
         ])
       );
       const result = await puppeteester.ci();
@@ -29,7 +29,7 @@ suite("Puppeteester class", () => {
           "--coverage",
           "--coverage-output",
           "/tmp",
-          "ci"
+          "ci",
         ])
       );
       const result = await puppeteester.ci();
@@ -46,7 +46,7 @@ suite("Puppeteester class", () => {
           path.resolve("example", "src"),
           "--chrome-executable-path",
           "/foo",
-          "ci"
+          "ci",
         ])
       );
       try {

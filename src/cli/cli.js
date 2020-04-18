@@ -3,10 +3,10 @@
 import { parse } from "../lib/configuration.js";
 import { Puppeteester } from "../lib/puppeteester.js";
 
-(async function() {
+(async function () {
   const config = parse();
   const puppeteester = new Puppeteester(config);
-  puppeteester.on("console", event => {
+  puppeteester.on("console", (event) => {
     console.log(...event.args);
   });
   if (config.mode === "ci") {

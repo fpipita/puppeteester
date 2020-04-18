@@ -6,5 +6,5 @@ mocha.setup({
   ui,
   color: true,
   reporter: headless ? "spec" : undefined,
-  checkLeaks: false
+  checkLeaks: false,
 });

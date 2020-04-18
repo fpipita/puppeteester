@@ -31,7 +31,7 @@ import { RunPuppeteerTask } from "./run-puppeteer-task.js";
  * @param {PuppeteesterConfig} config
  * @returns {express.Handler}
  */
-const serveTests = config => (req, res) => {
+const serveTests = (config) => (req, res) => {
   const useragent = req.headers["user-agent"];
   const headless = !useragent || /headless/i.test(useragent);
   glob(path.join(config.sources, config["specs-glob"]), (er, files) => {
@@ -50,14 +50,14 @@ const serveTests = config => (req, res) => {
           <script type="module">
             window.__puppeteester__ = ${JSON.stringify({
               headless,
-              ui: config.ui
+              ui: config.ui,
             })};
             window.process = ${JSON.stringify({ env: { NODE_ENV: "test" } })};
           </script>
           <script type="module" src="/puppeteester/setup.js"></script>
           ${files
             .map(
-              file =>
+              (file) =>
                 `<script type="module" src="${file.replace(
                   config.sources,
                   ""
@@ -101,7 +101,7 @@ function createApp(config) {
   app.use(
     esm(config.sources, {
       nodeModulesRoot: config["node-modules"],
-      disableCaching: config["disable-caching"]
+      disableCaching: config["disable-caching"],
     })
   );
   app.use("/", express.static(config.sources));
@@ -166,7 +166,7 @@ export class Puppeteester extends EventEmitter {
    * @returns {Promise<PuppeteesterApplication>}
    */
   _start() {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       const app = createApp(this._config);
       const server = app.listen(this._config["express-port"], () => {
         const address = /** @type {import("net").AddressInfo} */ (server.address());
