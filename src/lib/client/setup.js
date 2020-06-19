@@ -2,7 +2,7 @@ import "/node_modules/mocha/mocha.js?nomodule=true";
 import { headless, ui } from "./config.js";
 
 mocha.setup({
-  enableTimeouts: false,
+  timeout: 0,
   ui,
   color: true,
   reporter: headless ? "spec" : undefined,

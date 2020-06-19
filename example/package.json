@@ -7,13 +7,13 @@
   "license": "GPL-3.0",
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^7.1.1"
+    "mocha": "^8.0.1"
   },
   "dependencies": {
     "lodash-es": "^4.17.15"
   },
   "scripts": {
-    "test": "../bin/puppeteester --sources ./src --coverage ci && echo 'tests passed' || echo 'tests failed'",
-    "watch": "../bin/puppeteester --sources ./src --coverage watch"
+    "test": "../src/cli/cli.js --sources ./src --coverage ci && echo 'tests passed' || echo 'tests failed'",
+    "watch": "../src/cli/cli.js --sources ./src --coverage watch"
   }
 }
