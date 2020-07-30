@@ -12,19 +12,22 @@ export class Task extends EventEmitter {
   }
 
   /**
-   * @return {Promise}
+   * @return {Promise<void>}
    */
   async cancel() {
     throw new TypeError("Abstract method");
   }
 }
 
+/**
+ * @extends {Task<void>}
+ */
 export class TimedTask extends Task {
   /**
    *
    * @param {import("./timer").Timer} timer
-   * @param {!number=} duration
-   * @param {function=} callback
+   * @param {number} duration
+   * @param {(x: number) => void} callback
    */
   constructor(timer, duration = 100, callback = () => {}) {
     super();
@@ -41,6 +44,9 @@ export class TimedTask extends Task {
   }
 }
 
+/**
+ * @extends {Task<void>}
+ */
 export class ThrowingTask extends Task {
   async run() {
     throw new Error();

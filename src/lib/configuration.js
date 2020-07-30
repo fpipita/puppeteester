@@ -2,6 +2,8 @@ import path from "path";
 import yargs from "yargs";
 import { findChromeExecutablePath } from "./utils.js";
 
+export const DEFAULT_GLOB_PATTERN = "**/*.test.js";
+
 export const parse = yargs
   .env("PUPPETEESTER")
   .command("$0 <mode> [specs-glob]", "starts puppeteester", (yargs) => {
@@ -13,7 +15,7 @@ export const parse = yargs
       })
       .positional("specs-glob", {
         type: "string",
-        default: "**/*.test.js",
+        default: DEFAULT_GLOB_PATTERN,
         desc:
           "Glob pattern to filter the spec files. This will be joined with the value provided in --sources. Make sure the pattern is enclosed within quotes to prevent the shell from expanding special chars (e.g. *).",
       });
@@ -79,7 +81,7 @@ export const parse = yargs
   })
   .option("chrome-executable-path", {
     type: "string",
-    default: findChromeExecutablePath(),
+    default: findChromeExecutablePath() ?? undefined,
     desc: "Absolute path to the Chrome executable.",
   })
   .option("express-port", {

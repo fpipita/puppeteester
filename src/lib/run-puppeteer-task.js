@@ -1,11 +1,14 @@
-import puppeteer from "puppeteer-core";
-import pti from "puppeteer-to-istanbul";
-import NYC from "nyc";
 import fs from "fs";
-import path from "path";
 import minimatch from "minimatch";
-import { Task } from "./task.js";
+// @ts-ignore
+import NYC from "nyc";
+import path from "path";
+import puppeteer from "puppeteer-core";
+// @ts-ignore
+import pti from "puppeteer-to-istanbul";
+import { DEFAULT_GLOB_PATTERN } from "./configuration.js";
 import { Deferred } from "./deferred.js";
+import { Task } from "./task.js";
 
 export class RunPuppetesterTaskOutput {
   /**
@@ -18,22 +21,38 @@ export class RunPuppetesterTaskOutput {
   }
 }
 
+/**
+ * @extends {Task<RunPuppetesterTaskOutput>}
+ */
 export class RunPuppeteerTask extends Task {
   /**
    * @param {string} testPageUrl
-   * @param {import("./puppeteester.js").PuppeteesterConfig} config
+   * @param {import("./types").PuppeteesterConfig} config
    */
   constructor(testPageUrl, config) {
     super();
     this._done = this._done.bind(this);
-    /** @type {import("./puppeteester.js").PuppeteesterConfig} */
+
+    /**
+     * @type {import("./types").PuppeteesterConfig}
+     */
     this._config = config;
-    /** @type {?puppeteer.Browser} */
+
+    /**
+     * @type {puppeteer.Browser | null}
+     */
     this._browser = null;
-    /** @type {?puppeteer.Page} */
+
+    /**
+     * @type {puppeteer.Page | null}
+     */
     this._page = null;
+
     this._testPageUrl = testPageUrl;
-    /** @type {Deferred<number>} */
+
+    /**
+     * @type {Deferred<number>}
+     */
     this._running = new Deferred();
   }
 
@@ -51,7 +70,9 @@ export class RunPuppeteerTask extends Task {
   _filterCoverageEntries(entries) {
     return entries.filter((entry) => {
       const { pathname } = new URL(entry.url);
-      if (minimatch(pathname, this._config["specs-glob"])) {
+      if (
+        minimatch(pathname, this._config["specs-glob"] ?? DEFAULT_GLOB_PATTERN)
+      ) {
         // esclude spec files
         return false;
       }

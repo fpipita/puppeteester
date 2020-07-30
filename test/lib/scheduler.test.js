@@ -1,6 +1,6 @@
 import assert from "assert";
 import { Scheduler } from "../../src/lib/scheduler.js";
-import { TimedTask, ThrowingTask } from "../../src/lib/task.js";
+import { ThrowingTask, TimedTask } from "../../src/lib/task.js";
 import { MockTimer } from "../../src/lib/timer.js";
 
 suite("Scheduler class", () => {

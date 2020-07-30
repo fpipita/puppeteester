@@ -2,8 +2,8 @@ import { Deferred } from "./deferred.js";
 
 export class Timer {
   /**
-   * @param {!number} milliseconds
-   * @returns {Promise}
+   * @param {number} milliseconds
+   * @returns {Promise<void>}
    */
   // eslint-disable-next-line no-unused-vars
   async wait(milliseconds) {
@@ -13,7 +13,7 @@ export class Timer {
 
 export class DefaultTimer extends Timer {
   /**
-   * @param {!number} milliseconds
+   * @param {number} milliseconds
    */
   wait(milliseconds) {
     return new Promise((resolve) => setTimeout(resolve, milliseconds));
@@ -23,14 +23,16 @@ export class DefaultTimer extends Timer {
 export class MockTimer extends Timer {
   constructor() {
     super();
-    /** @type {Map<number, Deferred>} */
+    /**
+     * @type {Map<number, Deferred<void>>}
+     */
     this._requests = new Map();
     this._elapsed = 0;
   }
 
   /**
-   * @param {!number} milliseconds
-   * @returns {Promise}
+   * @param {number} milliseconds
+   * @returns {Promise<void>}
    */
   wait(milliseconds) {
     const time = milliseconds + this._elapsed;
@@ -43,13 +45,13 @@ export class MockTimer extends Timer {
   }
 
   /**
-   * @param {!number} milliseconds
+   * @param {number} milliseconds
    */
   async flush(milliseconds) {
     this._elapsed += milliseconds;
     for (const [time, deferred] of this._requests.entries()) {
       if (time <= this._elapsed) {
-        await deferred.resolve(null).promise;
+        await deferred.resolve().promise;
         this._requests.delete(time);
       }
     }

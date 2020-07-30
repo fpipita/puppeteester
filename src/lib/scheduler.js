@@ -3,21 +3,17 @@ import { EventEmitter } from "events";
 
 /**
  * @template T
- * @callback TaskCompleteCallback
- * @param {T} result
- */
-
-/**
- * @template T
  */
 export class Scheduler extends EventEmitter {
   /**
    * @param {import("./timer").Timer} timer
-   * @param {!number=} polling
+   * @param {number} polling
    */
   constructor(timer, polling = 1000) {
     super();
-    /** @type {Array<import("./task").Task<T>>} */
+    /**
+     * @type {import("./task").Task<T>[]}
+     */
     this._queue = [];
     this._running = false;
     this._timer = timer;
@@ -26,7 +22,6 @@ export class Scheduler extends EventEmitter {
   }
 
   /**
-   *
    * @param {import("./task").Task<T>} task
    */
   schedule(task) {

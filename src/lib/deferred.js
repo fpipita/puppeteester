@@ -3,7 +3,9 @@
  */
 export class Deferred {
   constructor() {
-    /** @type {Promise<T>} */
+    /**
+     * @type {Promise<T>}
+     */
     this.promise = new Promise((resolve, reject) => {
       this._resolve = resolve;
       this._reject = reject;

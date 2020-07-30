@@ -3,15 +3,6 @@ sudo: required
 services:
   - docker
 
-env:
-  COMPOSE_VERSION: 1.25.3
-
-before_install:
-  - curl -L https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-  - chmod +x docker-compose
-  - sudo mv docker-compose /usr/local/bin
-
 script:
-  - docker-compose up -d
-  - docker-compose exec --user root dev-container sh -c "yarn install && yarn --cwd example/ install"
-  - docker-compose exec --user root dev-container yarn test
+  - docker build -t fpipita/puppeteester .
+  - docker run -v $(pwd):/puppeteester --workdir /puppeteester fpipita/puppeteester sh -c "npm install && npm test"
