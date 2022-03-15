@@ -42,7 +42,7 @@
     "eslint-config-prettier": "^6.11.0",
     "husky": "^4.2.5",
     "lint-staged": "^10.2.11",
-    "lodash-es": "^4.17.15",
+    "lodash-es": "^4.17.21",
     "mocha": "^8.0.1",
     "prettier": "^2.0.5",
     "typescript": "^3.9.7"
